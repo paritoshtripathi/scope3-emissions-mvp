@@ -1,0 +1,71 @@
+name: Build and Test Docker
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Docker
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+
+    # Step 3: Build all services
+    - name: Build services
+      run: docker-compose build
+
+    # Step 4: Test AI/ML service
+    - name: Test AI/ML Service
+      run: |
+        docker-compose up -d ai-ml
+        sleep 5  # Wait for the service to initialize
+        curl --fail http://localhost:5000/ || exit 1
+    - name: Stop AI/ML Service
+      run: docker-compose down
+
+    # Step 5: Test Backend service
+    - name: Test Backend Service
+      run: |
+        docker-compose up -d backend
+        sleep 5  # Wait for the service to initialize
+        curl --fail http://localhost:3000/ || exit 1
+    - name: Stop Backend Service
+      run: docker-compose down
+
+    # Step 6: Test Frontend service
+    - name: Test Frontend Service
+      run: |
+        docker-compose up -d frontend
+        sleep 5  # Wait for the service to initialize
+        curl --fail http://localhost:4200/ || exit 1
+    - name: Stop Frontend Service
+      run: docker-compose down
+
+    # Step 7: Test PostgreSQL service
+    - name: Test PostgreSQL Service
+      run: |
+        docker-compose up -d postgres
+        sleep 5  # Wait for the service to initialize
+        docker exec docker-postgres-1 psql -U user -c "\l" || exit 1
+    - name: Stop PostgreSQL Service
+      run: docker-compose down
+
+    # Step 8: Test Neo4j service
+    - name: Test Neo4j Service
+      run: |
+        docker-compose up -d neo4j
+        sleep 10  # Wait for Neo4j to initialize fully
+        curl --fail http://localhost:7474/ || exit 1
+    - name: Stop Neo4j Service
+      run: docker-compose down

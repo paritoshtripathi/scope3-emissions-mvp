@@ -1,0 +1,40 @@
+# Ignore Node.js dependencies
+frontend/node_modules/
+backend/node_modules/
+npm-debug.log
+
+# Ignore Angular build and cache files
+frontend/.angular/
+frontend/dist/
+
+# Ignore Python cache and virtual environments
+ai-ml/__pycache__/
+ai-ml/venv/
+ai-ml/*.pyc
+ai-ml/*.pyo
+
+# Ignore environment variables
+*.env
+.env.example
+
+# Ignore database runtime data
+database/postgres/data/
+database/neo4j/data/
+database/neo4j/logs/
+
+# Ignore Docker cache
+**/docker/postgres/data/
+**/docker/neo4j/data/
+**/docker/neo4j/logs/
+docker/*.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore logs and other temporary files
+*.log
+*.tmp
+
+# Ignore Git-specific files
+.git/

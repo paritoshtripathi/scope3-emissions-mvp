@@ -1,0 +1,59 @@
+# version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "4200:80"  # Host port 4200 mapped to container port 80
+    volumes:
+      - ../frontend:/app
+    environment:
+      - NODE_ENV=production
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../backend:/app
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_USER=test_user
+      - DB_PASS=test_pass
+
+  ai-ml:
+    build:
+      context: ../ai-ml
+      dockerfile: Dockerfile.ai-ml
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../ai-ml:/app
+    environment:
+      - PYTHON_ENV=development
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pass
+      POSTGRES_DB: test_db
+    volumes:
+      - ../database/postgres/data:/var/lib/postgresql/data
+
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ../database/neo4j/data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/securepassword

@@ -31,6 +31,7 @@ jobs:
         docker-compose up -d ai-ml
         sleep 5  # Wait for the service to initialize
         curl --fail http://localhost:5000/ || exit 1
+        docker exec docker-ai-ml-1 pytest /app/tests/
     - name: Stop AI/ML Service
       run: docker-compose down
 
@@ -40,6 +41,7 @@ jobs:
         docker-compose up -d backend
         sleep 5  # Wait for the service to initialize
         curl --fail http://localhost:3000/ || exit 1
+        docker exec docker-backend-1 npm test
     - name: Stop Backend Service
       run: docker-compose down
 
@@ -49,6 +51,7 @@ jobs:
         docker-compose up -d frontend
         sleep 5  # Wait for the service to initialize
         curl --fail http://localhost:4200/ || exit 1
+        docker exec docker-frontend-1 ng test --watch=false
     - name: Stop Frontend Service
       run: docker-compose down
 

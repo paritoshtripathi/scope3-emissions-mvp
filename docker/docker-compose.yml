@@ -27,6 +27,7 @@ services:
       POSTGRES_HOST: postgres
     depends_on:
       - postgres
+      - ai-ml
 
   ai-ml:
     build:
@@ -40,7 +41,8 @@ services:
       USE_INFERENCE_API: "true"              # Set to "false" to use a local model
       LOCAL_MODEL_NAME: "distilbert-base-uncased"  # Specify local model name
       INFERENCE_API_URL: "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
-      HF_API_TOKEN: "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"  
+      HF_API_TOKEN: "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"
+     
 
   postgres:
     image: postgres:latest

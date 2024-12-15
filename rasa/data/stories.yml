@@ -1,0 +1,16 @@
+version: "3.1"
+stories:
+  - story: greet user
+    steps:
+      - intent: greet
+      - action: utter_greet
+
+  - story: goodbye user
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: user asks about Scope 3
+    steps:
+      - intent: inquire_scope3
+      - action: utter_inquire_scope3

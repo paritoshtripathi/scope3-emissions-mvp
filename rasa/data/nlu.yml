@@ -1,0 +1,17 @@
+version: "3.1"
+nlu:
+  - intent: greet
+    examples: |
+      - hello
+      - hi
+      - hey
+  - intent: goodbye
+    examples: |
+      - bye
+      - goodbye
+      - see you later
+  - intent: inquire_scope3
+    examples: |
+      - Tell me about Scope 3 emissions.
+      - What are Scope 3 emissions?
+      - Explain indirect emissions.

@@ -22,6 +22,15 @@ database/postgres/data/
 database/neo4j/data/
 database/neo4j/logs/
 
+# Ignore Rasa Models and configs
+rasa/.config/
+rasa/.keras/
+rasa/.rasa/
+rasa/actions/
+rasa/logs/
+rasa/models/
+rasa/.bash_history
+
 # Ignore Docker cache
 **/docker/postgres/data/
 **/docker/neo4j/data/

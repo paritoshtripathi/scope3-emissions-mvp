@@ -1,0 +1,23 @@
+FROM rasa/rasa:3.6.20
+
+# Switch to root user to resolve permission issues
+USER root
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --upgrade pip && pip install --no-cache-dir rasa[full]
+
+# Initialize Rasa project if it doesn't already exist
+RUN rasa init --no-prompt --quiet || true
+
+# Train a basic Rasa model
+RUN rasa train || true  # Train a basic model during build
+
+# Switch back to rasa user
+USER 1001
+
+EXPOSE 5005
+
+CMD ["run", "--enable-api", "--port", "5005", "--cors", "*"]

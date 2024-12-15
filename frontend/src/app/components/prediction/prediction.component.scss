@@ -1,0 +1,28 @@
+.prediction-container {
+    margin: 20px;
+  
+    textarea {
+      margin-top: 10px;
+      width: 100%;
+    }
+  
+    button {
+      margin-top: 10px;
+    }
+  
+    .loader {
+      margin-top: 10px;
+      color: blue;
+    }
+  
+    pre {
+        background: #f4f4f4;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        white-space: pre-wrap; /* Enable wrapping of text */
+        word-wrap: break-word; /* Break long words if necessary */
+    }
+      
+  }
+  

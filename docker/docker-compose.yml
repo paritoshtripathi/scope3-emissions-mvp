@@ -21,10 +21,12 @@ services:
     volumes:
       - ../backend:/app
     environment:
-      - NODE_ENV=development
-      - DB_HOST=postgres
-      - DB_USER=test_user
-      - DB_PASS=test_pass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: scope3
+      POSTGRES_HOST: postgres
+    depends_on:
+      - postgres
 
   ai-ml:
     build:
@@ -35,18 +37,22 @@ services:
     volumes:
       - ../ai-ml:/app
     environment:
-      - PYTHON_ENV=development
+      USE_INFERENCE_API: "true"              # Set to "false" to use a local model
+      LOCAL_MODEL_NAME: "distilbert-base-uncased"  # Specify local model name
+      INFERENCE_API_URL: "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
+      HF_API_TOKEN: "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"  
 
   postgres:
     image: postgres:latest
+    container_name: scope3_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: scope3
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_pass
-      POSTGRES_DB: test_db
     volumes:
-      - ../database/postgres/data:/var/lib/postgresql/data
+      - ./database/postgres:/docker-entrypoint-initdb.d
 
   neo4j:
     image: neo4j:latest
@@ -57,3 +63,28 @@ services:
       - ../database/neo4j/data:/data
     environment:
       - NEO4J_AUTH=neo4j/securepassword
+
+  rasa:
+    build:
+      context: ../rasa
+      dockerfile: Dockerfile.rasa
+    volumes:
+      - ../rasa:/app
+      - ../rasa/models:/app/models
+      - ../rasa/logs:/app/logs
+      - ../rasa/actions:/app/actions
+      - ../rasa/config:/app/config
+      - ../rasa/data:/app/data
+    ports:
+      - "5005:5005"
+    environment:
+      - PYTHONWARNINGS=ignore
+      - SQLALCHEMY_WARN_20=0
+      - SQLALCHEMY_SILENCE_UBER_WARNING=1
+    
+  actions:
+    image: rasa/rasa-sdk:3.6.0
+    volumes:
+      - ../rasa/actions:/app/actions
+    ports:
+      - "5055:5055"

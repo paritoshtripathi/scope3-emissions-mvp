@@ -1,0 +1,17 @@
+<div class="prediction-container">
+    <h1>AI/ML Prediction</h1>
+    <textarea
+      [(ngModel)]="inputText"
+      placeholder="Enter text for prediction"
+      rows="5"
+      cols="40"
+    ></textarea>
+    <br />
+    <button (click)="getPrediction()" [disabled]="isLoading">Get Prediction</button>
+    <div *ngIf="isLoading" class="loader">Loading...</div>
+    <div *ngIf="predictionResult">
+      <h3>Prediction Result:</h3>
+      <pre>{{ predictionResult | json }}</pre>
+    </div>
+  </div>
+  

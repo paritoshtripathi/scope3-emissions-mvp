@@ -6,9 +6,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { PredictionComponent } from './components/prediction/prediction.component';
 import { AiMlService } from './services/ai-ml.service';
+import { ChatComponent } from './components/chat/chat.component';
 
 @NgModule({
-  declarations: [AppComponent, PredictionComponent],
+  declarations: [AppComponent, PredictionComponent, ChatComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule],
   providers: [AiMlService],
   bootstrap: [AppComponent]

@@ -3,3 +3,7 @@ transformers==4.30.0
 torch==2.0.1
 numpy<2
 xformers
+langchain==0.0.187
+faiss-cpu==1.7.4
+openai==0.27.8
+Flask==2.2.5

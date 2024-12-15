@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors'); // Import the CORS middleware
 const pool = require('./src/models/db'); // Import PostgreSQL connection
 const rasaRoutes = require('./src/routes/rasa'); // Import Rasa routes
+const langchainRoutes = require("./src/routes/langchain"); // Import Langchain routes
+
 
 const app = express();
 
@@ -22,6 +24,9 @@ app.use('/api/ai-ml', require('./src/routes/ai-ml'));
 
 // Rasa route for chatbot integration
 app.use('/api/rasa', rasaRoutes);
+
+// Langchain route for chatbot integration
+app.use("/langchain", langchainRoutes);
 
 // Add a database test route
 app.get('/db-test', async (req, res) => {

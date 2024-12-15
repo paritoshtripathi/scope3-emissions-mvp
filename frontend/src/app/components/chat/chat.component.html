@@ -1,0 +1,12 @@
+<div class="chat-container">
+    <div class="messages">
+      <div *ngFor="let message of messages" [ngClass]="['message', message.user]">
+        <div class="bubble" [ngClass]="message.user">{{ message.text }}</div>
+      </div>
+    </div>
+    <div class="input-area">
+      <input [(ngModel)]="userInput" placeholder="Type a message..." />
+      <button (click)="sendMessage()" [disabled]="!userInput.trim()">Send</button>
+    </div>
+  </div>
+  

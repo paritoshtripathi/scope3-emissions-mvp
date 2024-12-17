@@ -1,0 +1,58 @@
+.dashboard {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  
+    h2, h3, h4 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+  
+    label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+  
+    input, select {
+      margin: 10px 0;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 200px;
+      font-size: 14px;
+    }
+  
+    button {
+      padding: 8px 15px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+  
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+  
+    .prediction-results {
+      margin-top: 20px;
+      text-align: left;
+      display: inline-block;
+  
+      p {
+        font-size: 14px;
+        color: #555;
+  
+        strong {
+          color: #333;
+        }
+      }
+    }
+  
+    canvas {
+      margin: 20px auto;
+    }
+  }
+  

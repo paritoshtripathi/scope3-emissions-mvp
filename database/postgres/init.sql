@@ -1,6 +1,6 @@
 
-CREATE ROLE postgres WITH LOGIN PASSWORD 'password';
-CREATE DATABASE scope3 OWNER postgres;
+-- CREATE ROLE postgres WITH LOGIN PASSWORD 'password';
+-- CREATE DATABASE scope3 OWNER postgres;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -13,10 +13,11 @@ CREATE TABLE users (
 
 CREATE TABLE emissions_data (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    emission_type VARCHAR(50) NOT NULL, -- e.g., CO2, NOx
-    value DECIMAL(10, 2) NOT NULL,
-    unit VARCHAR(20) NOT NULL, -- e.g., kg, tonnes
-    recorded_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    category VARCHAR(255), -- e.g., "Employee Commuting"
+    source_type VARCHAR(255), -- e.g., "Diesel Vehicles"
+    current_emissions FLOAT, -- CO2 in tons
+    potential_reduction FLOAT, -- CO2 in tons
+    reduction_strategy VARCHAR(255), -- e.g., "Switch to EVs"
+    predicted_emissions FLOAT, -- Projected emissions after reduction
+    created_at TIMESTAMP DEFAULT NOW()
 );

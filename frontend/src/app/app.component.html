@@ -1,9 +1,14 @@
+<!-- <div>
+  <h1>Data from Backend (Sample API):</h1>
+  <ul>
+    <li *ngFor="let item of backendData">{{ item }}</li>
+  </ul>
+  <hr />
+  <app-prediction></app-prediction> 
+</div> -->
 
-<div class="app-container">
-  <h1>Scope 3 Emissions MVP</h1>
-  <app-chat></app-chat> <!-- Embed the chat component -->
+<!-- Chat Overlay -->
+<div class="container">
+  <app-chat (updateDashboard)="dashboard.onChatUpdate($event)"></app-chat>
+  <app-dashboard #dashboard></app-dashboard>
 </div>
-
-<app-prediction></app-prediction>
-
-<router-outlet></router-outlet>

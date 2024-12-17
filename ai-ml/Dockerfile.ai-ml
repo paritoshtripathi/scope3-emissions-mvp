@@ -1,13 +1,32 @@
+# Base image
 FROM python:3.9-slim
 
+# Set working directory
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install OS dependencies for FAISS and NLP tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY . .
+# Copy project files
+COPY . /app
 
-ENV HUGGINGFACE_API_KEY="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"
+# Install dependencies
+RUN pip install -r requirements.txt
 
-EXPOSE 5000
-CMD ["python", "app.py"]
+# Set NLTK data path
+ENV NLTK_DATA=/root/nltk_data
+ENV HF_API_TOKEN="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"
+
+# Default command: Generate clean embeddings and start the API
+CMD ["sh", "-c", "\
+    if [ ! -f 'output/combined_clean_embeddings.json' ]; then \
+        echo 'Generating embeddings...'; \
+        python scripts/generate_clean_embeddings.py; \
+    else \
+        echo 'Embeddings already exist. Skipping generation.'; \
+    fi && \
+    echo 'Starting Flask microservice...' && \
+    python app.py"]

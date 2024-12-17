@@ -27,22 +27,23 @@ services:
       POSTGRES_HOST: postgres
     depends_on:
       - postgres
-      - ai-ml
 
   ai-ml:
     build:
       context: ../ai-ml
       dockerfile: Dockerfile.ai-ml
+    container_name: ai-ml
     ports:
       - "5000:5000"
     volumes:
-      - ../ai-ml:/app
+      - ../ai-ml:/app/
+      - ../ai-ml/models:/app/output    
     environment:
       USE_INFERENCE_API: "true"              # Set to "false" to use a local model
       LOCAL_MODEL_NAME: "distilbert-base-uncased"  # Specify local model name
       INFERENCE_API_URL: "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
       HF_API_TOKEN: "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"
-     
+    
 
   postgres:
     image: postgres:latest
@@ -54,7 +55,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./database/postgres:/docker-entrypoint-initdb.d
+      - ../database/postgres:/docker-entrypoint-initdb.d
 
   neo4j:
     image: neo4j:latest

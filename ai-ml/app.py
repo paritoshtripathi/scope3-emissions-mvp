@@ -1,56 +1,50 @@
-from flask import Flask, request, jsonify
 import os
-import requests
-# from transformers import pipeline
+import json
+from flask import Flask, request, jsonify
 from inference.langchain_service import query_pipeline
+from langchain_huggingface import HuggingFaceEndpoint
 
-
-# Initialize Flask app
+# Flask App Setup
 app = Flask(__name__)
 
-# Model selection options
-# USE_INFERENCE_API = os.getenv("USE_INFERENCE_API", "true").lower() == "true"
-# LOCAL_MODEL_NAME = os.getenv("LOCAL_MODEL_NAME", "distilbert-base-uncased")
+# Load Embeddings and Model Paths
+EMBEDDINGS_PATH = "models/combined_clean_embeddings.json"
 
-INFERENCE_API_URL = os.getenv("INFERENCE_API_URL", "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct")
-HF_API_TOKEN = os.getenv("HF_API_TOKEN", "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")
-
-# # Initialize model (local or API-based)
-# if USE_INFERENCE_API:
-#     print("Using Hugging Face Inference API for predictions.")
-# else:
-#     print(f"Loading local model: {LOCAL_MODEL_NAME}")
-#     model = pipeline("text-classification", model=LOCAL_MODEL_NAME)
-
-@app.route("/")
-def home():
-    return jsonify({"message": "AI/ML Service is running!"}), 200
-
-@app.route('/predict', methods=['POST'])
+# Predict Route: Returns insights based on category or query
+@app.route("/predict", methods=["POST"])
 def predict():
+    """Predict insights based on user query or category."""
     data = request.json
-    if "text" not in data:
-        return jsonify({"error": "No text provided"}), 400
+    category = data.get("category", "")
+    query = data.get("query", "")
 
-    # if USE_INFERENCE_API:
-        # Use Hugging Face Inference API
-    headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
-    response = requests.post(INFERENCE_API_URL, headers=headers, json={"inputs": data["text"]})
-    if response.status_code != 200:
-        return jsonify({"error": "Inference API failed", "details": response.json()}), 500
-    predictions = response.json()
-    # else:
-    #     # Use locally loaded model
-    #     predictions = model(data["text"])
+    if not category and not query:
+        return jsonify({"error": "Provide either a category or a query"}), 400
 
-    return jsonify(predictions)
+    try:
+        # Load embeddings data
+        with open(EMBEDDINGS_PATH, "r") as f:
+            embeddings = json.load(f)
 
+        # Fetch insights for category or query
+        if category:
+            result = embeddings.get(category, "No data available for this category.")
+        else:
+            result = query_pipeline(query)
+
+        return jsonify({"response": result})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Query Route: Chatbot queries
 @app.route("/query", methods=["POST"])
-def handle_query():
+def query_endpoint():
+    """Handle chatbot queries."""
     data = request.json
-    question = data.get("question")
+    question = data.get("query", "")
     if not question:
-        return jsonify({"error": "Question is required"}), 400
+        return jsonify({"error": "Query is required"}), 400
 
     try:
         response = query_pipeline(question)
@@ -59,4 +53,4 @@ def handle_query():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)

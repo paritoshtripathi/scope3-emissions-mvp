@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { PredictionComponent } from './components/prediction/prediction.component';
@@ -10,10 +10,6 @@ import { ChatComponent } from './components/chat/chat.component';
 import { DashboardModule } from './modules/dashboard/dashboard.module'; // Import DashboardModule
 
 
-@NgModule({
-  declarations: [AppComponent, PredictionComponent, ChatComponent],
-  imports: [BrowserModule, FormsModule, HttpClientModule, DashboardModule],
-  providers: [AiMlService],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [AppComponent, PredictionComponent, ChatComponent],
+    bootstrap: [AppComponent], imports: [BrowserModule, FormsModule, DashboardModule], providers: [AiMlService, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {}

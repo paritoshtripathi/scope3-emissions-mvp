@@ -1,50 +1,11 @@
-<div class="dashboard">
-    <h2>🌍 Emission Insights Dashboard</h2>
-  
-    <!-- Pie Chart: Total Emissions -->
-    <div style="width: 60%; margin: auto;">
-      <h3>Total Emissions by Category</h3>
-      <canvas baseChart
-              [data]="pieChartData"
-              type="pie"
-              [options]="chartOptions">
-      </canvas>
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened>
+    <app-sidebar></app-sidebar>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-toolbar></app-toolbar>
+    <div class="dashboard-content">
+      <app-visualization-section></app-visualization-section>
     </div>
-  
-    <!-- Bar Chart: Potential Reduction -->
-    <div style="width: 60%; margin: auto;">
-      <h3>Potential Reduction by Category</h3>
-      <canvas baseChart
-              [data]="barChartData"
-              type="bar"
-              [options]="chartOptions">
-      </canvas>
-    </div>
-  
-    <hr />
-  
-    <!-- Prediction Form -->
-    <h3>🔮 Predict Emission Reductions</h3>
-    <div>
-      <label for="category">Category:</label>
-      <select [(ngModel)]="selectedCategory">
-        <option *ngFor="let insight of insights" [value]="insight.category">{{ insight.category }}</option>
-      </select>
-  
-      <label for="reduction">Reduction %:</label>
-      <input type="number" [(ngModel)]="reductionPercentage" placeholder="Enter %" />
-  
-      <button (click)="predictReduction()">Predict</button>
-    </div>
-  
-    <!-- Prediction Results -->
-    <div *ngIf="predictionResult" class="prediction-results">
-      <h4>Prediction Results</h4>
-      <p><strong>Category:</strong> {{ predictionResult.category }}</p>
-      <p><strong>Total Emissions:</strong> {{ predictionResult.total_emissions }} tons</p>
-      <p><strong>Reduction (%):</strong> {{ predictionResult.reduction_percentage }}%</p>
-      <p><strong>Predicted Reduction:</strong> {{ predictionResult.predicted_reduction }} tons</p>
-      <p><strong>New Emissions:</strong> {{ predictionResult.new_emissions }} tons</p>
-    </div>
-  </div>
-  
+  </mat-sidenav-content>
+</mat-sidenav-container>

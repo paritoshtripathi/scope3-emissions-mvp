@@ -3,9 +3,10 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
   insights: any[] = [];

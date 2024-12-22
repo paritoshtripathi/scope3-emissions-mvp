@@ -2,9 +2,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+    selector: 'app-chat',
+    templateUrl: './chat.component.html',
+    styleUrls: ['./chat.component.scss'],
+    standalone: false
 })
 export class ChatComponent {
   isCollapsed = true;

@@ -3,9 +3,10 @@ import { Component } from '@angular/core';
 import { AiMlService } from '../../services/ai-ml.service';
 
 @Component({
-  selector: 'app-prediction',
-  templateUrl: './prediction.component.html',
-  styleUrls: ['./prediction.component.scss']
+    selector: 'app-prediction',
+    templateUrl: './prediction.component.html',
+    styleUrls: ['./prediction.component.scss'],
+    standalone: false
 })
 export class PredictionComponent {
   inputText: string = ''; // User input

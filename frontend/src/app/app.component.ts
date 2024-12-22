@@ -20,9 +20,11 @@ import { HttpClient } from '@angular/common/http';
 //   `
 // })
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html', // Use external HTML file
-  styleUrls: ['./app.component.scss'] // Include styles
+    selector: 'app-root',
+    templateUrl: './app.component.html', // Use external HTML file
+    styleUrls: ['./app.component.scss'] // Include styles
+    ,
+    standalone: false
 })
 
 export class AppComponent implements OnInit {

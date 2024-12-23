@@ -16,20 +16,20 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // Existing functionality to fetch data from the backend
-    this.http.get<any>('http://localhost:3000/api/sample').subscribe({
-      next: (response) => {
-        this.backendData = response.data;
-      },
-      error: (error) => {
-        console.error('Error fetching data from backend', error);
-      },
-      complete: () => {
-        console.log('Request complete');
-      }
-    });
+    // this.http.get<any>('http://localhost:3000/api/sample').subscribe({
+    //   next: (response) => {
+    //     this.backendData = response.data;
+    //   },
+    //   error: (error) => {
+    //     console.error('Error fetching data from backend', error);
+    //   },
+    //   complete: () => {
+    //     console.log('Request complete');
+    //   }
+    // });
   }
 
    // Add a ViewChild reference to access the DashboardComponent
-   @ViewChild(DashboardComponent, { static: true }) dashboard!: DashboardComponent;
+   //@ViewChild(DashboardComponent, { static: true }) dashboard!: DashboardComponent;
 
 }

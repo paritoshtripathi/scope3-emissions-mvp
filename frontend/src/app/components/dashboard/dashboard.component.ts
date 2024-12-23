@@ -11,6 +11,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // Any additional logic for initializing the dashboard container
+    console.log('Dashboard initialized');
   }
 
   // Handle updates from app-chat component

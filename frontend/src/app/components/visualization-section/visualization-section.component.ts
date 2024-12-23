@@ -12,10 +12,11 @@ export class VisualizationSectionComponent implements OnInit {
   barChartOptions: any;
 
   ngOnInit(): void {
+    console.log('VisualizationSectionComponent initialized');
     this.initializePieChart();
     this.initializeBarChart();
   }
-
+ 
   initializePieChart(): void {
     this.pieChartOptions = {
       title: { text: 'Emissions Distribution', left: 'center' },

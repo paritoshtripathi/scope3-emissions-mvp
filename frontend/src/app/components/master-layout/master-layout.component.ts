@@ -1,3 +1,4 @@
+
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,4 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./master-layout.component.scss'],
   standalone:false
 })
-export class MasterLayoutComponent {}
+export class MasterLayoutComponent {
+  ngOnInit(): void {
+    console.log('Master layout initialized');
+  }
+}
+

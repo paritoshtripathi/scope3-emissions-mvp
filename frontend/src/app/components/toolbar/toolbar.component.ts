@@ -7,5 +7,8 @@ import { Component } from '@angular/core';
   standalone: false
 })
 export class ToolbarComponent {
+  ngOnInit(): void {
+    console.log('Toolbar initialized');
+  }
 
 }

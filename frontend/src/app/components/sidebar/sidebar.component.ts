@@ -18,6 +18,7 @@ export class SidebarComponent implements OnInit {
     // Listen to route changes and update the active link
     this.router.events.subscribe(() => {
       this.activeLink = this.router.url; // Set the current route as active
+      console.log('Sidebar initialized + this.activeLink:', this.activeLink);
     });
     } catch (error) {
       console.error('Error in SidebarComponent:', error);

@@ -2,39 +2,51 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-
+import { AppRoutingModule } from './app-routing.module';
+import { RouterModule, RoutesRecognized, Router  } from '@angular/router';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { AiMlService } from '@services/ai-ml.service';
 import { AppComponent } from './app.component';
-import { MasterLayoutComponent } from '@components/master-layout/master-layout.component';
-import { SidebarComponent } from '@components/sidebar/sidebar.component';
-import { ToolbarComponent } from '@components/toolbar/toolbar.component';
 import { ChatComponent } from '@components/chat/chat.component';
 import { ErrorBoundaryComponent } from '@components/error-boundary/error-boundary.component';
-
+import { MasterLayoutModule } from '@modules/masterlayout/masterlayout.module';
+//import { Router } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
-    MasterLayoutComponent,
-    SidebarComponent,
-    ToolbarComponent,
-    ChatComponent,
-    ErrorBoundaryComponent
+    // MasterLayoutComponent,
+    ChatComponent
+    //ErrorBoundaryComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    AppRoutingModule,
     RouterModule.forRoot([]),
-    MatToolbarModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule
+    MasterLayoutModule
+  ],
+  exports: [
+    //MasterLayoutModule
+  ],
+  providers: [
+    // { provide: ErrorHandler, useClass: AppErrorHandler },
+    AiMlService,
+    provideHttpClient(withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent]
+  
 })
-export class AppModule {}
+export class AppModule {
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof RoutesRecognized) {
+            console.log('Route:TESTINGGGGGGGGGG', event.state.root.children);
+        }
+    });
+  }
+  
+}
+
+

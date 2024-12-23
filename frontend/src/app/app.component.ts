@@ -1,38 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DashboardComponent } from '@components/dashboard/dashboard.component'; // Adjust the import path as needed
 
-// @Component({
-//   selector: 'app-root',
-//   template: `
-//     <div>
-//       <h1>Data from Backend (Sample API):</h1>
-//       <ul>
-//         <li *ngFor="let item of backendData">{{ item }}</li>
-//       </ul>
-//       <hr />
-
-//       <app-prediction></app-prediction> <!-- Embed the Prediction Component -->
-//     </div>
-//     <div class="app-container">
-//     <!-- Your existing content -->
-//       <app-chat></app-chat> <!-- Chat overlay component -->
-//     </div>
-//   `
-// })
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html', // Use external HTML file
-    styleUrls: ['./app.component.scss'] // Include styles
-    ,
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html', // Use external HTML file
+  styleUrls: ['./app.component.scss'], // Include styles
+  standalone: false
 })
-
 export class AppComponent implements OnInit {
   backendData: number[] = [];
 
+ 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    // Existing functionality to fetch data from the backend
     this.http.get<any>('http://localhost:3000/api/sample').subscribe({
       next: (response) => {
         this.backendData = response.data;
@@ -45,4 +28,8 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
+   // Add a ViewChild reference to access the DashboardComponent
+   @ViewChild(DashboardComponent, { static: true }) dashboard!: DashboardComponent;
+
 }

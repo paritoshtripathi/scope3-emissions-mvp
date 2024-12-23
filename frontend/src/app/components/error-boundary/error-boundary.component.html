@@ -1,0 +1,5 @@
+<div *ngIf="hasError" class="error-message">
+    <p>Oops! Something went wrong. We'll be back shortly.</p>
+  </div>
+  <ng-content *ngIf="!hasError"></ng-content>
+  

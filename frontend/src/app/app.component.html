@@ -1,3 +1,17 @@
+<div class="container">
+  <!-- Chat Overlay with Error Boundary -->
+  <app-error-boundary>
+    <app-chat></app-chat>
+  </app-error-boundary>
+
+  <!-- Master Layout with Error Boundary -->
+  <app-error-boundary>
+    <app-master-layout></app-master-layout>
+  </app-error-boundary>
+</div>
+
+
+
 <!-- <div>
   <h1>Data from Backend (Sample API):</h1>
   <ul>
@@ -8,7 +22,11 @@
 </div> -->
 
 <!-- Chat Overlay -->
-<div class="container">
-  <app-chat (updateDashboard)="dashboard.onChatUpdate($event)"></app-chat>
-  <app-dashboard #dashboard></app-dashboard>
-</div>
+<!-- <div class="container">
+  <app-error-boundary>
+    <app-chat (updateDashboard)="dashboard.onChatUpdate($event)"></app-chat>
+  </app-error-boundary>
+  <app-error-boundary>
+    <app-dashboard></app-dashboard>
+  </app-error-boundary>
+</div> -->

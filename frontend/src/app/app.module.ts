@@ -1,15 +1,40 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 import { AppComponent } from './app.component';
-import { PredictionComponent } from './components/prediction/prediction.component';
-import { AiMlService } from './services/ai-ml.service';
-import { ChatComponent } from './components/chat/chat.component';
-import { DashboardModule } from './modules/dashboard/dashboard.module'; // Import DashboardModule
+import { MasterLayoutComponent } from '@components/master-layout/master-layout.component';
+import { SidebarComponent } from '@components/sidebar/sidebar.component';
+import { ToolbarComponent } from '@components/toolbar/toolbar.component';
+import { ChatComponent } from '@components/chat/chat.component';
+import { ErrorBoundaryComponent } from '@components/error-boundary/error-boundary.component';
 
-
-@NgModule({ declarations: [AppComponent, PredictionComponent, ChatComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule, FormsModule, DashboardModule], providers: [AiMlService, provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    MasterLayoutComponent,
+    SidebarComponent,
+    ToolbarComponent,
+    ChatComponent,
+    ErrorBoundaryComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    RouterModule.forRoot([]),
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
+  ],
+  bootstrap: [AppComponent]
+})
 export class AppModule {}

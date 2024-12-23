@@ -1,4 +1,23 @@
-.spacer {
-    flex: 1;
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3f51b5;
+  color: #fff;
+  padding: 0 16px;
+
+  .toolbar-title {
+    font-size: 20px;
+    font-weight: 600;
   }
-  
+
+  .profile-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+      font-size: 24px;
+    }
+  }
+}

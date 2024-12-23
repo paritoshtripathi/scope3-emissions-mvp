@@ -1,11 +1,13 @@
-<ngx-charts-bar-vertical
-  [results]="data"
-  [xAxis]="true"
-  [yAxis]="true"
-  [legend]="true"
-  [showDataLabel]="true"
-></ngx-charts-bar-vertical>
-<button mat-raised-button matTooltip="This chart shows Scope 3 emissions trends.">
-    Emissions Chart
-  </button>
-  
+<div class="visualization-section">
+  <!-- Pie Chart -->
+  <div class="chart-container">
+    <h3 class="title">Emissions Distribution</h3>
+    <div echarts [options]="pieChartOptions" class="chart"></div>
+  </div>
+
+  <!-- Bar Chart -->
+  <div class="chart-container">
+    <h3 class="title">Reduction Achievements</h3>
+    <div echarts [options]="barChartOptions" class="chart"></div>
+  </div>
+</div>

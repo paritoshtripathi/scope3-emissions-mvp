@@ -11,12 +11,20 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   // Fetch emission insights
-  getInsights(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/insights`);
-  }
+  // getInsights(): Observable<any> {
+  //   return this.http.get<any>(`${this.baseUrl}/insights`);
+  // }
 
-  // Predict emission reductions
+  // // Predict emission reductions
+  // predictReduction(payload: any): Observable<any> {
+  //   return this.http.post<any>(`${this.baseUrl}/predict`, payload);
+  // }
+  getInsights(): Observable<any> {
+    return this.http.get('/api/insights'); // Replace with your backend API
+  }
+  
   predictReduction(payload: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/predict`, payload);
+    return this.http.post('/api/predict-reduction', payload); // Replace with your backend API
   }
 }
+

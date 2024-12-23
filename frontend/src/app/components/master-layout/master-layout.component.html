@@ -1,0 +1,15 @@
+<mat-sidenav-container>
+    <!-- Sidebar -->
+    <mat-sidenav mode="side" opened>
+      <app-sidebar></app-sidebar>
+    </mat-sidenav>
+  
+    <!-- Main Content -->
+    <mat-sidenav-content>
+      <app-toolbar></app-toolbar>
+      <div class="main-content">
+        <router-outlet></router-outlet> <!-- Dynamic Route Content -->
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  

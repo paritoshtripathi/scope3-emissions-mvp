@@ -1,30 +1,78 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DashboardService {
   private baseUrl = '/api/data';
 
   constructor(private http: HttpClient) {}
 
-  // Fetch emission insights
   // getInsights(): Observable<any> {
-  //   return this.http.get<any>(`${this.baseUrl}/insights`);
+  //   return this.http.get('/api/data/insights').pipe(
+  //     catchError((error) => {
+  //       console.error('Error fetching insights:', error);
+  //       // Return default mock data
+  //       return of([
+  //         { category: 'Category A', value: 100 },
+  //         { category: 'Category B', value: 200 }
+  //       ]);
+  //     })
+  //   );
   // }
 
-  // // Predict emission reductions
   // predictReduction(payload: any): Observable<any> {
-  //   return this.http.post<any>(`${this.baseUrl}/predict`, payload);
+  //   return this.http.post('/api/data/predict', payload).pipe(
+  //     catchError((error) => {
+  //       console.error('Error predicting reductions:', error);
+  //       // Return default mock data
+  //       return of([{ category: 'Category A', value: 80 }]);
+  //     })
+  //   );
   // }
+
+
   getInsights(): Observable<any> {
-    return this.http.get('/api/insights'); // Replace with your backend API
+    return this.http.get('/api/data/insights').pipe(
+      map((response: any) => {
+        // Transform the API data into a format suitable for pie and bar charts
+        const pieData = response.insights.map((item: any) => ({
+          value: item.total_emissions,
+          name: item.category
+        }));
+  
+        const barData = response.insights.map((item: any) => ({
+          category: item.category,
+          value: item.total_reduction
+        }));
+  
+        return { pieData, barData };
+      }),
+      catchError((error) => {
+        console.error('Error fetching insights:', error);
+        return of({ pieData: [], barData: [] });
+      })
+    );
   }
   
   predictReduction(payload: any): Observable<any> {
-    return this.http.post('/api/predict-reduction', payload); // Replace with your backend API
+    return this.http.post('/api/data/predict', payload).pipe(
+      map((response: any) => {
+        // Transform prediction data
+        return {
+          category: response.category,
+          predictedReduction: response.predicted_reduction,
+          newEmissions: response.new_emissions
+        };
+      }),
+      catchError((error) => {
+        console.error('Error fetching predictions:', error);
+        return of([]);
+      })
+    );
   }
+  
 }
-

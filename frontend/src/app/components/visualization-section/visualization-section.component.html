@@ -1,13 +1,31 @@
 <div class="visualization-section">
-  <!-- Pie Chart -->
+  <!-- Dynamic Pie Chart -->
   <div class="chart-container">
-    <h3 class="title">Emissions Distribution</h3>
+    <h3 class="title">Dynamic Emissions Distribution</h3>
+    <div *ngIf="insights.length; else dynamicError" echarts [options]="pieChartOptions" class="chart"></div>
+    <ng-template #dynamicError>
+      <p class="error-message">Error loading dynamic insights.</p>
+    </ng-template>
+  </div>
+
+  <!-- Dynamic Bar Chart -->
+  <div class="chart-container">
+    <h3 class="title">Dynamic Reduction Achievements</h3>
+    <div *ngIf="predictions.length; else barChartError" echarts [options]="barChartOptions" class="chart"></div>
+    <ng-template #barChartError>
+      <p class="error-message">Error loading dynamic predictions.</p>
+    </ng-template>
+  </div>
+
+  <!-- Static Pie Chart -->
+  <div class="chart-container">
+    <h3 class="title">Static Emissions Distribution</h3>
     <div echarts [options]="pieChartOptions" class="chart"></div>
   </div>
 
-  <!-- Bar Chart -->
+  <!-- Static Bar Chart -->
   <div class="chart-container">
-    <h3 class="title">Reduction Achievements</h3>
+    <h3 class="title">Static Reduction Achievements</h3>
     <div echarts [options]="barChartOptions" class="chart"></div>
   </div>
 </div>

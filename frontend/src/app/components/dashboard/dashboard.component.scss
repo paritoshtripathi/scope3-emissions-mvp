@@ -1,21 +1,24 @@
 .dashboard-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  padding: 16px;
+  display: grid;
+  //grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+  gap: 16px; /* Space between items */
+  padding: 24px; /* Adds padding around the dashboard content */
+  background-color: #f5f5f5; /* Optional: Light background for better contrast */
 
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Switch to single column */
+  }
   .chart-container {
-    flex: 1 1 calc(50% - 32px);
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
     padding: 16px;
+    background: #ffffff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+    border-radius: 8px;
   }
 
   .title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center; /* Center-align the chart titles */
   }
 }

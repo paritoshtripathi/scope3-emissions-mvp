@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+
 @NgModule({
   declarations: [
     MasterLayoutComponent,
@@ -19,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ToolbarComponent
   ],
   imports: [
-    SharedModule, 
+    SharedModule,
     RouterModule,
     MatSidenavModule,
     MatToolbarModule,

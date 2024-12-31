@@ -8,12 +8,15 @@ import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
 import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
+import { ChatComponent } from '@components/chat/chat.component';
+
 //import { RouterModule } from '@angular/router';
 //import { Router } from '@angular/router';
 
 @NgModule({
   declarations: [
-    VisualizationSectionComponent
+    VisualizationSectionComponent,
+    ChatComponent
   ],
   imports: [
     CommonModule,
@@ -33,7 +36,8 @@ import { VisualizationSectionComponent } from '@components/visualization-section
   exports: [
     CommonModule,
     FormsModule,
-    VisualizationSectionComponent
+    VisualizationSectionComponent,
+    ChatComponent
   ]
 })
 export class SharedModule { }

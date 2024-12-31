@@ -1,0 +1,15 @@
+<div class="avatar-container">
+    <div class="avatar-avatar" (click)="toggleChat()" *ngIf="!walkthroughActive">
+      <img [src]="avatarImage" alt="Avatar" />
+    </div>
+  
+    <div class="walkthrough" *ngIf="walkthroughActive">
+      <div class="walkthrough-step">
+        <h3>{{ currentStep.title }}</h3>
+        <p>{{ currentStep.description }}</p>
+      </div>
+      <button (click)="nextStep()" *ngIf="!isLastStep()">Next</button>
+      <button (click)="skipWalkthrough()">Skip</button>
+    </div>
+  </div>
+  

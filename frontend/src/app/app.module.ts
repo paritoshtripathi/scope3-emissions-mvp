@@ -13,9 +13,9 @@ import { MasterLayoutModule } from '@modules/masterlayout/masterlayout.module';
 //import { Router } from '@angular/router';
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
     // MasterLayoutComponent,
-    ChatComponent
+    //ChatComponent
     //ErrorBoundaryComponent
   ],
   imports: [

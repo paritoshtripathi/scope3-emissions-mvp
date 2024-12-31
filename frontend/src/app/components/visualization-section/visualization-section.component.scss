@@ -1,16 +1,23 @@
 .visualization-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 16px;
 
   .chart-container {
-    width: 80%;
-    height: 400px;
+    padding: 16px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
 
     .chart {
-      width: 100%;
-      height: 100%;
+      height: 300px; /* Ensure consistent chart height */
     }
   }
 }

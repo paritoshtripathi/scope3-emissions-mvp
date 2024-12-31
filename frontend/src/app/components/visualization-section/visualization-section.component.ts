@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-visualization-section',
@@ -7,23 +6,39 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./visualization-section.component.scss'],
   standalone: false
 })
-export class VisualizationSectionComponent implements OnInit {
+export class VisualizationSectionComponent implements OnInit, OnChanges {
+  @Input() insights: any[] = [];
+  @Input() predictions: any[] = [];
   pieChartOptions: any;
   barChartOptions: any;
+  error: string | null = null;
 
   ngOnInit(): void {
     console.log('VisualizationSectionComponent initialized');
-    this.initializePieChart();
-    this.initializeBarChart();
+    this.initializeStaticCharts();
   }
- 
-  initializePieChart(): void {
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['insights'] && this.insights?.length) {
+      this.updateDynamicPieChart();
+    } else {
+      this.error = 'Failed to load insights data.';
+    }
+
+    if (changes['predictions'] && this.predictions?.length) {
+      this.updateDynamicBarChart();
+    } else {
+      this.error = this.error || 'Failed to load predictions data.';
+    }
+  }
+
+  initializeStaticCharts(): void {
     this.pieChartOptions = {
-      title: { text: 'Emissions Distribution', left: 'center' },
+      title: { text: 'Static Emissions Distribution', left: 'center' },
       tooltip: { trigger: 'item' },
       series: [
         {
-          name: 'Emissions',
+          name: 'Static Emissions',
           type: 'pie',
           radius: '50%',
           data: [
@@ -31,28 +46,48 @@ export class VisualizationSectionComponent implements OnInit {
             { value: 735, name: 'Category B' },
             { value: 580, name: 'Category C' },
             { value: 484, name: 'Category D' },
-            { value: 300, name: 'Category E' }
+            { value: 300, name: 'Category E' },
           ],
-          emphasis: {
-            itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' }
-          }
-        }
-      ]
+        },
+      ],
+    };
+
+    this.barChartOptions = {
+      title: { text: 'Static Reduction Achievements', left: 'center' },
+      xAxis: { type: 'category', data: ['A', 'B', 'C', 'D', 'E'] },
+      yAxis: { type: 'value' },
+      series: [{ type: 'bar', data: [500, 400, 300, 200, 100] }],
     };
   }
 
-  initializeBarChart(): void {
-    this.barChartOptions = {
-      title: { text: 'Reduction Achievements', left: 'center' },
-      tooltip: { trigger: 'axis' },
-      xAxis: { type: 'category', data: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'] },
-      yAxis: { type: 'value' },
-      series: [
-        {
-          data: [820, 932, 901, 934, 1290],
-          type: 'bar'
-        }
-      ]
-    };
+  updateDynamicPieChart(): void {
+    // this.pieChartOptions = {
+    //   ...this.pieChartOptions,
+    //   series: [
+    //     {
+    //       ...this.pieChartOptions.series[0],
+    //       data: this.insights.map((item) => ({ value: item.value, name: item.category }))
+    //     },
+    //   ],
+    // };
+    this.pieChartOptions.series[0].data = this.insights;
+  }
+
+  updateDynamicBarChart(): void {
+    // this.barChartOptions = {
+    //   ...this.barChartOptions,
+    //   series: [
+    //     {
+    //       ...this.barChartOptions.series[0],
+    //       data: this.predictions.map((item) => item.value),
+    //     },
+    //   ],
+    //   xAxis: {
+    //     ...this.barChartOptions.xAxis,
+    //     data: this.predictions.map((item) => item.category),
+    //   },
+    // };
+    this.barChartOptions.series[0].data = this.predictions.map((item) => item.value);
+    this.barChartOptions.xAxis.data = this.predictions.map((item) => item.category);
   }
 }

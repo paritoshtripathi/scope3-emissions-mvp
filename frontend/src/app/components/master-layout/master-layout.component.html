@@ -1,20 +1,12 @@
-<!-- <mat-sidenav-container>
-  <mat-sidenav mode="side" opened>
-    <app-sidebar></app-sidebar>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-toolbar></app-toolbar>
-    <div class="main-content">
+<app-toolbar></app-toolbar>
+<div class="layout-container">
+  <mat-sidenav-container>
+    <mat-sidenav mode="side" opened>
+      <app-sidebar></app-sidebar>
+    </mat-sidenav>
+    <mat-sidenav-content>
       <router-outlet></router-outlet>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container> -->
-<mat-sidenav-container>
-  <mat-sidenav mode="side" opened>
-    <app-sidebar></app-sidebar>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-toolbar></app-toolbar>
-    <!-- <router-outlet></router-outlet> -->
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+<!-- <app-avatar></app-avatar> Add Avatar Component -->

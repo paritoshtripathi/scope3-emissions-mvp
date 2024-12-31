@@ -1,4 +1,30 @@
 <div class="dashboard-content">
   <h2>Dashboard Content</h2>
-  <app-visualization-section></app-visualization-section>
+
+  <ng-container *ngIf="!errorMessage; else errorTemplate">
+    <app-visualization-section 
+      [insights]="insights" 
+      [predictions]="reductionPredictions">
+    </app-visualization-section>
+  </ng-container>
+
+  <!-- Error Template -->
+  <ng-template #errorTemplate>
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  </ng-template>
+
+  <!-- Avatar Component -->
+  <app-avatar
+    [insights]="insights"
+    [predictions]="reductionPredictions"
+    (walkthroughComplete)="onWalkthroughComplete()">
+  </app-avatar>
 </div>
+
+
+<!-- <div class="dashboard-content">
+  <h2>Dashboard Content</h2>
+  <app-visualization-section></app-visualization-section>
+</div> -->

@@ -9,6 +9,7 @@ import * as echarts from 'echarts';
 
 import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
 import { ChatComponent } from '@components/chat/chat.component';
+import { AvatarComponent } from '@components/avatar/avatar.component';
 
 //import { RouterModule } from '@angular/router';
 //import { Router } from '@angular/router';
@@ -16,7 +17,7 @@ import { ChatComponent } from '@components/chat/chat.component';
 @NgModule({
   declarations: [
     VisualizationSectionComponent,
-    ChatComponent
+    AvatarComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +38,7 @@ import { ChatComponent } from '@components/chat/chat.component';
     CommonModule,
     FormsModule,
     VisualizationSectionComponent,
-    ChatComponent
+    AvatarComponent
   ]
 })
 export class SharedModule { }

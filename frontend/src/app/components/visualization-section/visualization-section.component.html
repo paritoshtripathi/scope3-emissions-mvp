@@ -2,7 +2,7 @@
   <!-- Dynamic Pie Chart -->
   <div class="chart-container">
     <h3 class="title">Dynamic Emissions Distribution</h3>
-    <div *ngIf="insights.length; else dynamicError" echarts [options]="pieChartOptions" class="chart"></div>
+    <div *ngIf="insights.length; else dynamicError" echarts [options]="dPieChartOptions" class="chart"></div>
     <ng-template #dynamicError>
       <p class="error-message">Error loading dynamic insights.</p>
     </ng-template>
@@ -11,7 +11,7 @@
   <!-- Dynamic Bar Chart -->
   <div class="chart-container">
     <h3 class="title">Dynamic Reduction Achievements</h3>
-    <div *ngIf="predictions.length; else barChartError" echarts [options]="barChartOptions" class="chart"></div>
+    <div *ngIf="predictions.length; else barChartError" echarts [options]="dBarChartOptions" class="chart"></div>
     <ng-template #barChartError>
       <p class="error-message">Error loading dynamic predictions.</p>
     </ng-template>

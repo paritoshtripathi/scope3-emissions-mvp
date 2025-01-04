@@ -4,17 +4,25 @@ FROM python:3.9-slim
 # Set working directory
 WORKDIR /app
 
+# Copy only requirements.txt first to leverage Docker cache
+COPY requirements.txt /app/requirements.txt
+
 # Install OS dependencies for FAISS and NLP tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Install only missing Python packages
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-deps -r requirements.txt
+
+
 # Copy project files
 COPY . /app
 
-# Install dependencies
-RUN pip install -r requirements.txt
+# # Install dependencies
+# RUN pip install -r requirements.txt
 
 # Set NLTK data path
 ENV NLTK_DATA=/root/nltk_data

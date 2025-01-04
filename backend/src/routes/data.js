@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { insertEmissionsData } = require("../models/emissionsModel"); // Correct import path
 const pool = require('../models/db');
+const axios = require("axios");
 
 // Data ingestion route
 router.post("/ingest", async (req, res) => {
@@ -78,5 +79,24 @@ router.post("/predict", async (req, res) => {
     }
 });
 
-module.exports = router;
+// Generate explanation route
+router.post('/generateExplanation', async (req, res) => {
+  const { context } = req.body;
+  console.log('IN GENERATE EXPLANATION', context);
+  const prompt = `
+    You are a maritime sustainability expert specializing in Scope 3 emissions. 
+    Based on the following data: ${JSON.stringify(context)}, generate actionable insights and reduction strategies.
+  `;
+  console.log('Generating explanation with prompt...1',prompt);
+  try {
+    console.log('Generating explanation with prompt...2',prompt);
+    const response = await axios.post('http://localhost:5000/predict_with_template', { prompt });
+    res.json(response.data.result); // Result from Llama 3
+  } catch (error) {
+    console.log('Generating explanation with prompt...3',prompt);
+    console.error('Error generating explanation:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
+module.exports = router;

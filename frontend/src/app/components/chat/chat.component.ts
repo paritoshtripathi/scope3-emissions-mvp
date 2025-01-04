@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
     standalone: false
 })
 export class ChatComponent {
+  @Input() visible: boolean = false; // Control visibility via Input
   isCollapsed = true;
   userMessage: string = '';
   messages: { user: string; text: string }[] = [];
@@ -19,6 +20,11 @@ export class ChatComponent {
 
   toggleChat(): void {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  closeChat(): void {
+    const appEvent = new CustomEvent('toggleChat', { detail: false });
+    window.dispatchEvent(appEvent);
   }
 
   sendMessage(): void {

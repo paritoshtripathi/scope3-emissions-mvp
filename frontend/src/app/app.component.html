@@ -1,32 +1,7 @@
 <div class="container">
-  <!-- Chat Overlay with Error Boundary -->
-  <!-- <app-error-boundary> -->
-    <app-chat></app-chat>
-  <!-- </app-error-boundary> -->
-
+  <!-- Chat Overlay with Error Boundary
+    <app-chat *ngIf="chatVisible"></app-chat> -->
+  
   <!-- Master Layout with Error Boundary -->
-  <!-- <app-error-boundary> -->
     <app-master-layout></app-master-layout>
-  <!-- </app-error-boundary> -->
 </div>
-
-
-
-<!-- <div>
-  <h1>Data from Backend (Sample API):</h1>
-  <ul>
-    <li *ngFor="let item of backendData">{{ item }}</li>
-  </ul>
-  <hr />
-  <app-prediction></app-prediction> 
-</div> -->
-
-<!-- Chat Overlay -->
-<!-- <div class="container">
-  <app-error-boundary>
-    <app-chat (updateDashboard)="dashboard.onChatUpdate($event)"></app-chat>
-  </app-error-boundary>
-  <app-error-boundary>
-    <app-dashboard></app-dashboard>
-  </app-error-boundary>
-</div> -->

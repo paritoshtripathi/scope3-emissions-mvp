@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { ChatComponent } from '@components/chat/chat.component';
 import { ErrorBoundaryComponent } from '@components/error-boundary/error-boundary.component';
 import { MasterLayoutModule } from '@modules/masterlayout/masterlayout.module';
+import { SharedModule } from '@modules/shared/shared.module';
 //import { Router } from '@angular/router';
 @NgModule({
   declarations: [
@@ -24,10 +25,11 @@ import { MasterLayoutModule } from '@modules/masterlayout/masterlayout.module';
     FormsModule,
     AppRoutingModule,
     RouterModule.forRoot([]),
-    MasterLayoutModule
+    MasterLayoutModule,
+    SharedModule
   ],
   exports: [
-    //MasterLayoutModule
+    MasterLayoutModule
   ],
   providers: [
     // { provide: ErrorHandler, useClass: AppErrorHandler },

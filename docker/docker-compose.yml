@@ -43,7 +43,26 @@ services:
       LOCAL_MODEL_NAME: "distilbert-base-uncased"  # Specify local model name
       INFERENCE_API_URL: "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
       HF_API_TOKEN: "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"
-    
+    depends_on:
+      - weaviate
+
+  weaviate:
+    image: semitechnologies/weaviate:latest
+    container_name: scope3_weaviate
+    ports:
+      - 8080:8080
+      - 50051:50051
+    environment:
+      - QUERY_DEFAULTS=limit=10
+      - LIMIT_RESOURCES=false
+      - ENABLE_MODULES=text2vec-transformers
+      - CLUSTER_HOSTNAME=localhost
+      - META_STORE_TIMEOUT=600
+    volumes:
+      - ../database/weaviate/data:/var/lib/weaviate
+    restart: unless-stopped
+
+ 
 
   postgres:
     image: postgres:latest

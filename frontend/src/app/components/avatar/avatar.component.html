@@ -1,15 +1,55 @@
 <div class="avatar-container">
-    <div class="avatar-avatar" (click)="toggleChat()" *ngIf="!walkthroughActive">
-      <img [src]="avatarImage" alt="Avatar" />
-    </div>
-  
-    <div class="walkthrough" *ngIf="walkthroughActive">
-      <div class="walkthrough-step">
-        <h3>{{ currentStep.title }}</h3>
-        <p>{{ currentStep.description }}</p>
-      </div>
-      <button (click)="nextStep()" *ngIf="!isLastStep()">Next</button>
-      <button (click)="skipWalkthrough()">Skip</button>
+  <!-- Collapsible Chat Icon -->
+  <div *ngIf="!isChatMode && !walkthroughActive" class="chat-overlay">
+    <div class="chat-icon avatar-icon" (click)="toggleChatMode()">
+     <img [src]="avatarImage" alt="Chat Avatar" />
     </div>
   </div>
-  
+  <!-- Walkthrough Modal -->
+  <div *ngIf="walkthroughActive" class="walkthrough-modal">
+    <div class="walkthrough-content">
+      <!-- Avatar Illustration -->
+      <div class="avatar-illustration">
+        <img [src]="avatarImage" alt="Avatar Guide" />
+      </div>
+
+      <!-- Walkthrough Text -->
+      <div class="walkthrough-text">
+        <h2>{{ currentStep?.title || 'Welcome aboard!' }}</h2>
+        <p>{{ currentStep?.description || 'Let’s take a quick tour so you can hit the ground running!' }}</p>
+      </div>
+
+      <!-- Walkthrough Buttons -->
+      <div class="walkthrough-actions">
+        <button (click)="nextStep()" *ngIf="!isLastStep()">Next</button>
+        <button *ngIf="isLastStep()" (click)="endWalkthrough()">Finish</button>
+        <button class="skip-button" (click)="endWalkthrough()">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Window -->
+  <div *ngIf="isChatMode" class="chat-overlay">
+    <div class="chat-window">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <span>Chat with Us</span>
+        <button (click)="toggleChatMode()">✕</button>
+      </div>
+
+      <!-- Chat Messages -->
+      <div class="messages">
+        <div *ngFor="let message of messages" class="message" [ngClass]="message.user">
+          <strong>{{ message.user }}:</strong> {{ message.text }}
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="input-area">
+        <input [(ngModel)]="userMessage" placeholder="Type your message..." />
+        <button (click)="sendMessage()" [disabled]="!userMessage.trim()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+

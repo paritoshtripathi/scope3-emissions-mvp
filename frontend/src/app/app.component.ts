@@ -10,26 +10,18 @@ import { DashboardComponent } from '@components/dashboard/dashboard.component'; 
 })
 export class AppComponent implements OnInit {
   backendData: number[] = [];
-
+  chatVisible = false;
  
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Existing functionality to fetch data from the backend
-    // this.http.get<any>('http://localhost:3000/api/sample').subscribe({
-    //   next: (response) => {
-    //     this.backendData = response.data;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error fetching data from backend', error);
-    //   },
-    //   complete: () => {
-    //     console.log('Request complete');
-    //   }
-    // });
+
+    window.addEventListener('toggleChat', (event: any) => {
+      this.chatVisible = event.detail;
+    });
   }
 
-   // Add a ViewChild reference to access the DashboardComponent
-   //@ViewChild(DashboardComponent, { static: true }) dashboard!: DashboardComponent;
-
+  toggleChatVisibility(visible: boolean): void {
+    this.chatVisible = visible;
+  }
 }

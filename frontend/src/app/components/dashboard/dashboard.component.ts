@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DashboardService } from '@services/dashboard.service'; // Updated import path to @services/data.service';
+import { Component, OnInit } from '@angular/core';
+import { DashboardService } from '@services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'], // Updated for SCSS
+  styleUrls: ['./dashboard.component.scss'],
   standalone: false
 })
 export class DashboardComponent implements OnInit {
@@ -12,38 +12,41 @@ export class DashboardComponent implements OnInit {
   reductionPredictions: any[] = [];
   errorMessage: string | null = null;
 
-
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    // Any additional logic for initializing the dashboard container
-    console.log('Dashboard initialized');
-    // Fetch data from the service
-    this.fetchData();
+    this.loadDashboardData();
   }
 
-  fetchData(): void {
+  loadDashboardData(): void {
     this.dashboardService.getInsights().subscribe({
       next: (data) => {
+        console.log('data', data);
         this.insights = data.pieData;
         this.reductionPredictions = data.barData;
       },
-      error: (err) => console.error('Error fetching insights:', err),
-      complete: () => console.log('Insights request complete')
-    });
-  
-    this.dashboardService.predictReduction({ category: 'Employee Commuting', reduction_percentage: 50 }).subscribe({
-      next: (data) => {
-        console.log('Prediction Data:', data);
+      error: (error) => {
+        console.error('Failed to fetch dashboard data', error);
+        this.errorMessage = 'Unable to load dashboard data. Please try again later.';
+        
       },
-      error: (err) => console.error('Error fetching predictions:', err),
-      complete: () => console.log('Predictions request complete')
-    });
+      complete: () => {
+        
+        console.log('insights', this.insights);
+        console.log('predictions', this.reductionPredictions);
+        console.log('Dashboard data fetch completed');
+      }
+   });
   }
 
-  // Handle updates from app-chat component
-  onChatUpdate(updateData: any): void {
-    console.log('Chat update received:', updateData);
-    // Handle updates or pass them to child components if necessary
+  onWalkthroughComplete(): void {
+    console.log('Walkthrough completed');
+    // Additional actions post walkthrough, if any
+  }
+
+  onChatToggle(): void {
+    // Emit an event to the AppComponent or call a shared service to trigger visibility
+    const appEvent = new CustomEvent('toggleChat', { detail: true });
+    window.dispatchEvent(appEvent); // Dispatch event to toggle chat visibility
   }
 }

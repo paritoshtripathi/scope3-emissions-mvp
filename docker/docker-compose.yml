@@ -53,17 +53,16 @@ services:
       - 8080:8080
       - 50051:50051
     environment:
-      - QUERY_DEFAULTS=limit=10
-      - LIMIT_RESOURCES=false
-      - ENABLE_MODULES=text2vec-transformers
-      - CLUSTER_HOSTNAME=localhost
-      - META_STORE_TIMEOUT=600
+      - QUERY_DEFAULTS_LIMIT=20
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - DEFAULT_VECTORIZER_MODULE=text2vec-huggingface
+      - ENABLE_MODULES=text2vec-huggingface
+      - HUGGINGFACE_APIKEY="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"  # Replace with your actual API key
+      - CLUSTER_HOSTNAME=node1
     volumes:
       - ../database/weaviate/data:/var/lib/weaviate
     restart: unless-stopped
-
- 
-
+   
   postgres:
     image: postgres:latest
     container_name: scope3_postgres

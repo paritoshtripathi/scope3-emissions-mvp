@@ -21,7 +21,7 @@ OUTPUT_PATH = "ai-ml/models/combined_clean_embeddings.json"
 FAISS_INDEX_PATH = "ai-ml/models/faiss_index"
 WEB_URLS = [
     "https://ghgprotocol.org/scope-3-technical-calculation-guidance",
-    "https://www.epa.gov/ghgemissions/scope-3-inventory"
+    "https://www.pwc.com/us/en/services/esg/library/measuring-scope-3-emissions.html",
 ]
 
 # Chunk size for embeddings (measured in characters)

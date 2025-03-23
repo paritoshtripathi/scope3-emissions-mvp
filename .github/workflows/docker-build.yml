@@ -23,7 +23,7 @@ jobs:
 
     # Step 3: Build all services
     - name: Build services
-      run: docker-compose build
+      run: docker compose build
 
     # Step 4: Test AI/ML service
     - name: Test AI/ML Service
@@ -33,7 +33,7 @@ jobs:
         curl --fail http://localhost:5000/ || exit 1
         docker exec docker-ai-ml-1 pytest /app/tests/
     - name: Stop AI/ML Service
-      run: docker-compose down
+      run: docker compose down
 
     # Step 5: Test Backend service
     - name: Test Backend Service
@@ -43,17 +43,17 @@ jobs:
         curl --fail http://localhost:3000/ || exit 1
         docker exec docker-backend-1 npm test
     - name: Stop Backend Service
-      run: docker-compose down
+      run: docker compose down
 
     # Step 6: Test Frontend service
     - name: Test Frontend Service
       run: |
-        docker-compose up -d frontend
+        docker compose up -d frontend
         sleep 5  # Wait for the service to initialize
         curl --fail http://localhost:4200/ || exit 1
         docker exec docker-frontend-1 ng test --watch=false
     - name: Stop Frontend Service
-      run: docker-compose down
+      run: docker compose down
 
     # Step 7: Test PostgreSQL service
     - name: Test PostgreSQL Service
@@ -62,7 +62,7 @@ jobs:
         sleep 5  # Wait for the service to initialize
         docker exec docker-postgres-1 psql -U user -c "\l" || exit 1
     - name: Stop PostgreSQL Service
-      run: docker-compose down
+      run: docker compose down
 
     # Step 8: Test Neo4j service
     - name: Test Neo4j Service
@@ -71,4 +71,4 @@ jobs:
         sleep 10  # Wait for Neo4j to initialize fully
         curl --fail http://localhost:7474/ || exit 1
     - name: Stop Neo4j Service
-      run: docker-compose down
+      run: docker compose down

@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Scope3 Backend to AWS
 
 on:
   push:
@@ -10,10 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Deploy with Docker Compose
-      run: |
-        docker-compose down
-        docker-compose up -d
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Update your AWS region clearly
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t scope3-mvp-backend .
+          docker tag scope3-mvp-backend:latest ${{ secrets.ECR_REPOSITORY_URI }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop scope3-backend || true && docker rm scope3-backend || true
+            docker pull ${{ secrets.ECR_REPOSITORY_URI }}:latest
+            docker run -d -p 80:3000 --name scope3-backend ${{ secrets.ECR_REPOSITORY_URI }}:latest

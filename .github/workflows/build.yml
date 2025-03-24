@@ -9,40 +9,83 @@ on:
       - main
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
 
     services:
       postgres:
         image: postgres:latest
-        ports:
-          - 5432:5432
         env:
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_pass
           POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
+      # Setup Node.js (LTS)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - name: Install frontend dependencies
-      working-directory: frontend
-      run: npm install
+      # Setup Python (3.10 for AI-ML service)
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: Install backend dependencies
-      working-directory: backend
-      run: npm install
+      # ------------------------------
+      # Frontend Angular Build & Test
+      # ------------------------------
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm install
 
-    - name: Run tests for frontend
-      working-directory: frontend
-      run: npm run test
+      - name: Run Frontend Tests
+        working-directory: ./frontend
+        run: npm run test -- --watch=false --browsers=ChromeHeadless
 
-    - name: Run tests for backend
-      working-directory: backend
-      run: npm test
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: npm run build --prod
+
+      # ------------------------------
+      # Backend Node.js Build & Test
+      # ------------------------------
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run Backend Tests
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgres://test_user:test_pass@localhost:5432/test_db
+        run: npm test
+
+      - name: Build Backend
+        working-directory: ./backend
+        run: npm run build
+
+      # ---------------------------------
+      # AI-ML Python Service Test & Setup
+      # ---------------------------------
+      - name: Install AI-ML Dependencies
+        working-directory: ./ai-ml
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run AI-ML Tests
+        working-directory: ./ai-ml
+        run: |
+          python -m unittest discover -s tests
+
+      # ------------------------------
+      # Docker Compose Validation (optional, recommended)
+      # ------------------------------
+      - name: Validate Docker Compose Setup
+        run: docker compose -f docker-compose.yml config

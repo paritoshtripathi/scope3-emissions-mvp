@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - development
       - 'feature/*'
 
 jobs:
@@ -37,6 +37,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_AIML_URI }}
             docker stop scope3-aiml || true && docker rm scope3-aiml || true
             docker pull ${{ secrets.ECR_AIML_URI }}:latest
             docker run -d -p 5000:5000 --name scope3-aiml ${{ secrets.ECR_AIML_URI }}:latest

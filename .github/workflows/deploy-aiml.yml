@@ -1,0 +1,42 @@
+name: Deploy AI-ML (Python/LangChain)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/*'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-southeast-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to AWS ECR (AI-ML)
+        run: |
+          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_AIML_URI }}
+
+      - name: Build & Push AI-ML Docker Image
+        run: |
+          docker build -t scope3-mvp-aiml -f ./ai-ml/Dockerfile.ai-ml ./ai-ml
+          docker tag scope3-mvp-aiml:latest ${{ secrets.ECR_AIML_URI }}:latest
+          docker push ${{ secrets.ECR_AIML_URI }}:latest
+
+      - name: Deploy AI-ML to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop scope3-aiml || true && docker rm scope3-aiml || true
+            docker pull ${{ secrets.ECR_AIML_URI }}:latest
+            docker run -d -p 5000:5000 --name scope3-aiml ${{ secrets.ECR_AIML_URI }}:latest

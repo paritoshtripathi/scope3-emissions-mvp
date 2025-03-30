@@ -28,6 +28,8 @@ COPY . /app
 ENV NLTK_DATA=/root/nltk_data
 ENV HF_API_TOKEN="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"
 
+EXPOSE 5000
+
 # Default command: Generate clean embeddings and start the API
 CMD ["sh", "-c", "\
     if [ ! -f 'output/combined_clean_embeddings.json' ]; then \

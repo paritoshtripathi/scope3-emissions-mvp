@@ -16,6 +16,7 @@ ai-ml/*.pyo
 # Ignore environment variables
 *.env
 .env.example
+*.pem
 
 # Ignore database runtime data
 database/postgres/data/

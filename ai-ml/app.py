@@ -8,6 +8,13 @@ app = Flask(__name__)
 
 EMBEDDING_FILE = "models/combined_clean_embeddings.json"
 
+@app.route("/test", methods=["GET"])
+def test_endpoint():
+    """
+    Test endpoint to check if the server is running.
+    """
+    return jsonify({"message": "Server is running!"})
+
 # API Endpoint: Query using the LLM pipeline
 @app.route("/query", methods=["POST"])
 def query_endpoint():

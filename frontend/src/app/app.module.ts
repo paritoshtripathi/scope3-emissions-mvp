@@ -11,10 +11,13 @@ import { ChatComponent } from '@components/chat/chat.component';
 import { ErrorBoundaryComponent } from '@components/error-boundary/error-boundary.component';
 import { MasterLayoutModule } from '@modules/masterlayout/masterlayout.module';
 import { SharedModule } from '@modules/shared/shared.module';
+//import { DataUploadComponent } from './components/data-upload/data-upload.component';
+
 //import { Router } from '@angular/router';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    //DataUploadComponent
     // MasterLayoutComponent,
     //ChatComponent
     //ErrorBoundaryComponent

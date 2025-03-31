@@ -8,7 +8,8 @@ frontend/.angular/
 frontend/dist/
 
 # Ignore Python cache and virtual environments
-ai-ml/__pycache__/
+ai-ml/inference/__pycache__/
+ai-ml/__pycache__/*.*
 ai-ml/venv/
 ai-ml/*.pyc
 ai-ml/*.pyo
@@ -45,6 +46,8 @@ Thumbs.db
 # Ignore logs and other temporary files
 *.log
 *.tmp
+*.json
+*.index
 
 # Ignore Git-specific files
 .git/

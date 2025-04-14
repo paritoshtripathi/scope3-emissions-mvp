@@ -12,5 +12,26 @@
     </div>
   
     <button (click)="submitData()">Submit Data</button>
-  </div>
   
+
+    <div *ngIf="columns.length">
+    <h3>Detected Columns:</h3>
+    <ul>
+        <li *ngFor="let col of columns">{{ col }}</li>
+    </ul>
+
+    <h3>Preview Data:</h3>
+    <table>
+        <thead>
+        <tr>
+            <th *ngFor="let col of columns">{{ col }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let row of preview">
+            <td *ngFor="let col of columns">{{ row[col] }}</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>

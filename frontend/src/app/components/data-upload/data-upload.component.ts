@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { DataUploadService } from '@services/data-upload.service';
 
 @Component({
   selector: 'app-data-upload',
@@ -10,8 +10,10 @@ import { HttpClient } from '@angular/common/http';
 export class DataUploadComponent {
   selectedFile: File | null = null;
   s3Url: string = '';
+  columns: string[] = [];
+  preview: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private dataUploadService: DataUploadService) {}
 
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
@@ -23,23 +25,15 @@ export class DataUploadComponent {
       return;
     }
 
-    const formData = new FormData();
-    if (this.selectedFile) {
-      formData.append('file', this.selectedFile);
-    }
-
-    if (this.s3Url) {
-      formData.append('s3Url', this.s3Url);
-    }
-
-    this.http.post('/api/data/ingest', formData).subscribe({
+    this.dataUploadService.uploadFile(this.selectedFile!, this.s3Url).subscribe({
       next: (response) => {
-        alert('Data ingestion triggered successfully!');
-        console.log(response);
+        this.columns = response.columns;
+        this.preview = response.preview;
+        console.log('File uploaded successfully:', response);
       },
-      error: (error) => {
-        alert('Error in data ingestion.');
-        console.error(error);
+      error: (err) => {
+        console.error('Upload failed:', err);
+        alert('Failed to upload file.');
       }
     });
   }

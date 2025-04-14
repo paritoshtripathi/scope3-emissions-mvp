@@ -1,8 +1,8 @@
 
--- CREATE ROLE postgres WITH LOGIN PASSWORD 'password';
--- CREATE DATABASE scope3 OWNER postgres;
+--CREATE ROLE postgres WITH LOGIN PASSWORD 'password';
+--CREATE DATABASE scope3 OWNER postgres;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE emissions_data (
+CREATE TABLE IF NOT EXISTS  emissions_data (
     id SERIAL PRIMARY KEY,
     category VARCHAR(255), -- e.g., "Employee Commuting"
     source_type VARCHAR(255), -- e.g., "Diesel Vehicles"
@@ -21,3 +21,11 @@ CREATE TABLE emissions_data (
     predicted_emissions FLOAT, -- Projected emissions after reduction
     created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS ingestion_log (
+  id SERIAL PRIMARY KEY,
+  filename TEXT NOT NULL,
+  source TEXT,
+  upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

@@ -1,0 +1,34 @@
+
+<div *ngFor="let insight of insights">
+  <div *ngIf="insight.type === 'tile'" class="tile">
+    <h3>{{ insight.title }}</h3>
+    <p>{{ insight.value }}</p>
+    <small>{{ insight.description }}</small>
+  </div>
+
+  <div *ngIf="insight.type === 'card'" class="card">
+    <p>{{ insight.message }}</p>
+  </div>
+
+  <div *ngIf="insight.type === 'chart'" class="chart">
+    <h3>{{ insight.title }}</h3>
+    <apx-chart
+      *ngIf="insight.chartType === 'pie' || insight.chartType === 'donut'"
+      [series]="insight.values"
+      [chart]="{ type: insight.chartType }"
+      [labels]="insight.labels"
+      [responsive]="[{ breakpoint: 480, options: { chart: { width: 300 }, legend: { position: 'bottom' } } }]">
+    </apx-chart>
+
+    <apx-chart
+      *ngIf="insight.chartType === 'bar'"
+      [series]="[{
+        name: 'Emissions',
+        data: insight.values
+      }]"
+      [chart]="{ type: 'bar', height: 350 }"
+      [xaxis]="{ categories: insight.labels }">
+    </apx-chart>
+
+  </div>
+</div>

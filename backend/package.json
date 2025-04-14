@@ -15,8 +15,10 @@
     "backend": "file:",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
     "express": "^4.21.2",
-    "pg": "^8.13.1",
+    "multer": "^1.4.5-lts.2",
+    "pg": "^8.14.1",
     "sequelize": "^6.37.5"
   },
   "devDependencies": {

@@ -28,6 +28,10 @@ const routes: Routes = [
         loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule)
       },
       {
+        path: 'data-upload',
+        loadChildren: () => import('./modules/data-upload/data-upload.module').then(m => m.DataUploadModule)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

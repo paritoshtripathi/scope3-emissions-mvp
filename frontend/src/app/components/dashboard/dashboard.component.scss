@@ -1,132 +1,147 @@
 .dashboard-container {
   padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
+  height: 100%;
+  overflow-y: auto;
 
-.dashboard-header {
-  margin-bottom: 24px;
-
-  h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 500;
-  }
-
-  .subtitle {
-    margin: 8px 0 0;
-    color: rgba(0, 0, 0, 0.6);
-    font-size: 16px;
-  }
-}
-
-.summary-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-bottom: 24px;
-
-  mat-card {
-    mat-card-header {
-      margin-bottom: 16px;
-
-      mat-icon {
-        font-size: 24px;
-        height: 24px;
-        width: 24px;
-        color: #3f51b5;
-      }
-
-      mat-card-title {
-        font-size: 16px;
-        margin: 0;
-      }
-
-      mat-card-subtitle {
-        font-size: 14px;
-        margin: 4px 0 0;
-      }
-    }
-
-    mat-card-content {
-      h2 {
-        font-size: 32px;
-        margin: 0;
-        font-weight: 500;
-        color: #3f51b5;
-      }
-    }
-  }
-}
-
-.visualization-card {
-  margin-top: 24px;
-  
-  mat-card-content {
-    padding: 16px;
-  }
-}
-
-.error-card {
-  margin-top: 24px;
-  
-  .error-message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    
-    mat-icon {
-      margin-right: 8px;
-      font-size: 24px;
-    }
-
-    p {
-      margin: 0;
-      font-size: 16px;
-    }
-  }
-}
-
-// Dark theme styles
-:host-context(.dark-theme) {
   .dashboard-header {
+    margin-bottom: 24px;
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.87);
+    }
+
     .subtitle {
-      color: rgba(255, 255, 255, 0.7);
+      margin: 8px 0 0;
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 16px;
     }
   }
 
   .summary-cards {
-    mat-card {
-      background: #424242;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
 
+    mat-card {
       mat-card-header {
+        margin-bottom: 16px;
+
         mat-icon {
-          color: #7986cb;
+          font-size: 24px;
+          height: 24px;
+          width: 24px;
+          color: #3f51b5;
+        }
+
+        mat-card-title {
+          font-size: 16px;
+          margin: 0;
         }
 
         mat-card-subtitle {
-          color: rgba(255, 255, 255, 0.7);
+          font-size: 14px;
+          margin: 4px 0 0;
         }
       }
 
       mat-card-content {
         h2 {
-          color: #7986cb;
+          font-size: 32px;
+          margin: 0;
+          font-weight: 500;
+          color: #3f51b5;
         }
       }
     }
   }
 
   .visualization-card {
-    background: #424242;
+    margin-top: 24px;
+    
+    mat-card-content {
+      padding: 16px;
+      min-height: 400px;
+    }
   }
 
   .error-card {
-    background: #424242;
-    
     .error-message {
-      color: #f44336;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      
+      mat-icon {
+        margin-right: 8px;
+        font-size: 24px;
+        color: #f44336;
+      }
+
+      p {
+        margin: 0;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+// Dark theme styles
+:host-context(.dark-theme) {
+  .dashboard-container {
+    .dashboard-header {
+      h1 {
+        color: rgba(255, 255, 255, 0.87);
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .summary-cards {
+      mat-card {
+        background: #424242;
+
+        mat-card-header {
+          mat-icon {
+            color: #7986cb;
+          }
+
+          mat-card-title {
+            color: rgba(255, 255, 255, 0.87);
+          }
+
+          mat-card-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+          }
+        }
+
+        mat-card-content {
+          h2 {
+            color: #7986cb;
+          }
+        }
+      }
+    }
+
+    .visualization-card {
+      background: #424242;
+      
+      mat-card-header {
+        color: rgba(255, 255, 255, 0.87);
+      }
+    }
+
+    .error-card {
+      background: #424242;
+      
+      .error-message {
+        color: #ff8a80;
+      }
     }
   }
 }

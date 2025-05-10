@@ -13,7 +13,7 @@ export class MasterLayoutComponent {
 
   @ViewChild(AvatarComponent) avatarComponent!: AvatarComponent;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private readonly themeService: ThemeService) {}
 
   ngOnInit(): void {
     console.log('Master layout initialized');

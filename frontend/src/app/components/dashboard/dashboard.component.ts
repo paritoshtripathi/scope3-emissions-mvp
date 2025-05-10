@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
   reductionTarget: number = 15;
   categoriesCount: number = 5;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private readonly themeService: ThemeService) {}
 
   ngOnInit(): void {
     console.log('Dashboard initialized');

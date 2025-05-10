@@ -10,9 +10,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
-import { ChatComponent } from '@components/chat/chat.component';
 import { AvatarComponent } from '@components/avatar/avatar.component';
 
 @NgModule({
@@ -31,7 +33,10 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    MatListModule,
+    MatToolbarModule,
+    MatSidenavModule
   ],
   providers: [
     {
@@ -49,7 +54,10 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    MatListModule,
+    MatToolbarModule,
+    MatSidenavModule
   ]
 })
 export class SharedModule { }

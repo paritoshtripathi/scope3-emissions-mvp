@@ -4,7 +4,10 @@
   flex-direction: column;
 
   mat-toolbar {
+    flex: 0 0 auto;
     z-index: 2;
+    padding: 0 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     .spacer {
       flex: 1 1 auto;
@@ -27,11 +30,12 @@
     mat-sidenav {
       width: 250px;
       background: #fafafa;
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
     }
 
     mat-sidenav-content {
-      padding: 20px;
       background: #ffffff;
+      overflow-x: hidden;
     }
   }
 }
@@ -41,11 +45,18 @@
   .layout-container {
     mat-toolbar {
       background: #424242;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+      .theme-toggle {
+        color: #ffffff;
+      }
     }
 
     mat-sidenav-container {
       mat-sidenav {
         background: #424242;
+        border-right-color: rgba(255, 255, 255, 0.12);
       }
 
       mat-sidenav-content {

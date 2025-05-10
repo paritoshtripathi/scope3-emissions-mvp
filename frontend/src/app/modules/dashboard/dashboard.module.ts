@@ -4,6 +4,7 @@ import { DashboardComponent } from '@components/dashboard/dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
     SharedModule,
     DashboardRoutingModule,
     MatCardModule,
-    MatIconModule
+    MatIconModule,
+    MatDividerModule
   ]
 })
 export class DashboardModule { }

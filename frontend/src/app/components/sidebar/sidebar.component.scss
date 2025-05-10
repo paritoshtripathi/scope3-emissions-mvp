@@ -1,70 +1,80 @@
-.sidebar-container {
+:host {
+  display: block;
   height: 100%;
-  
-  mat-nav-list {
-    padding-top: 8px;
+}
 
-    a {
-      margin: 4px 8px;
-      border-radius: 4px;
-      
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.04);
-      }
+mat-nav-list {
+  padding-top: 8px;
 
-      mat-icon {
-        margin-right: 12px;
-        color: #666;
-      }
-
-      span {
-        font-size: 14px;
-      }
+  a {
+    margin: 4px 8px;
+    border-radius: 4px;
+    height: 48px;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
     }
 
-    .active-link {
-      background-color: rgba(63, 81, 181, 0.1);
-      
-      mat-icon {
-        color: #3f51b5;
-      }
+    mat-icon {
+      margin-right: 12px;
+      color: rgba(0, 0, 0, 0.54);
     }
 
-    mat-divider {
-      margin: 8px 0;
+    span {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.87);
     }
+  }
+
+  .active-link {
+    background-color: rgba(63, 81, 181, 0.1);
+    
+    mat-icon {
+      color: #3f51b5;
+    }
+
+    span {
+      color: #3f51b5;
+      font-weight: 500;
+    }
+  }
+
+  mat-divider {
+    margin: 8px 0;
   }
 }
 
 // Dark theme styles
 :host-context(.dark-theme) {
-  .sidebar-container {
-    background-color: #424242;
-
-    mat-nav-list {
-      a {
-        color: #fff;
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        mat-icon {
-          color: #aaa;
-        }
+  mat-nav-list {
+    a {
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
       }
 
-      .active-link {
-        background-color: rgba(255, 255, 255, 0.15);
-        
-        mat-icon {
-          color: #7986cb;
-        }
+      mat-icon {
+        color: rgba(255, 255, 255, 0.7);
       }
 
-      mat-divider {
-        border-color: rgba(255, 255, 255, 0.12);
+      span {
+        color: rgba(255, 255, 255, 0.87);
       }
+    }
+
+    .active-link {
+      background-color: rgba(121, 134, 203, 0.2);
+      
+      mat-icon {
+        color: #7986cb;
+      }
+
+      span {
+        color: #7986cb;
+      }
+    }
+
+    mat-divider {
+      border-color: rgba(255, 255, 255, 0.12);
     }
   }
 }

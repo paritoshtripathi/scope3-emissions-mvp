@@ -10,5 +10,5 @@ import { ThemeService } from '../../services/theme.service';
 export class SidebarComponent {
   isDarkTheme$ = this.themeService.isDarkTheme$;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private readonly themeService: ThemeService) {}
 }

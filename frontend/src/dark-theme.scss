@@ -1,0 +1,8 @@
+// Import a dark theme (e.g., Deep Purple-Amber)
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+// Override styles for dark theme
+body {
+  background-color: #303030; // Dark background
+  color: #eee; // Light text color
+}

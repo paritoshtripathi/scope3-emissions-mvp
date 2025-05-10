@@ -1,39 +1,46 @@
-mat-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #3f51b5;
-  color: #fff;
-  padding: 0 16px;
+.spacer {
+  flex: 1 1 auto;
+}
 
-  .toolbar-title {
-    font-size: 20px;
-    font-weight: 600;
-  }
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
 
-  .profile-icon {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.toolbar-genie-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
 
-    mat-icon {
-      font-size: 24px;
-    }
-  }
-  .spacer {
-    flex: 1;
-  }
-  
-  .toolbar-genie-icon {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    margin-right: 16px;
-    transition: transform 0.3s ease;
-  
-    &:hover {
-      transform: scale(1.1);
-    }
+.theme-toggle {
+  margin-right: 8px;
+}
+
+.walkthrough-btn {
+  &:hover {
+    opacity: 0.8;
   }
 }
 
+:host {
+  display: block;
+
+  mat-toolbar {
+    padding: 0 16px;
+    height: 64px;
+  }
+}
+
+// Dark theme specific styles
+:host-context(.dark-theme) {
+  mat-toolbar {
+    background: #424242;
+    color: #ffffff;
+  }
+
+  .theme-toggle, .walkthrough-btn {
+    color: #ffffff;
+  }
+}

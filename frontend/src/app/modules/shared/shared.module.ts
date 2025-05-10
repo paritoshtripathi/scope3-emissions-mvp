@@ -1,18 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-//import { RouterModule } from '@angular/router';
-//import { AppRoutingModule } from 'src/app/app-routing.module';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import this module
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
-import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
-import { ChatComponent } from '@components/chat/chat.component';
-import { AvatarComponent } from '@components/avatar/avatar.component';
+// Material Imports
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
-//import { RouterModule } from '@angular/router';
-//import { Router } from '@angular/router';
+import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
+import { AvatarComponent } from '@components/avatar/avatar.component';
 
 @NgModule({
   declarations: [
@@ -22,11 +25,18 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
   imports: [
     CommonModule,
     FormsModule,
-    // RouterModule.forChild([]),
     NgxEchartsModule.forRoot({
       echarts
-    })
-
+    }),
+    // Material Modules
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDividerModule,
+    MatListModule,
+    MatToolbarModule,
+    MatSidenavModule
   ],
   providers: [
     {
@@ -38,7 +48,16 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
     CommonModule,
     FormsModule,
     VisualizationSectionComponent,
-    AvatarComponent
+    AvatarComponent,
+    // Material Modules
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDividerModule,
+    MatListModule,
+    MatToolbarModule,
+    MatSidenavModule
   ]
 })
 export class SharedModule { }

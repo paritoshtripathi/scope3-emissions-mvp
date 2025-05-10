@@ -1,28 +1,67 @@
-mat-sidenav-container {
-  height: 100vh; /* Full height of the viewport */
-}
-
-@media (max-width: 768px) {
-  mat-sidenav {
-    width: 200px; /* Adjust sidebar width */
-  }
-
-  mat-sidenav-content {
-    padding: 8px; /* Adjust content padding */
-  }
-}
-
-mat-sidenav {
-  width: 240px; /* Fixed width for the sidebar */
-  background: #ffffff; /* Sidebar background color */
-}
-
-mat-sidenav-content {
-  padding: 0;
-  margin: 0;
-  background: #f5f5f5; /* Light background for content area */
+.layout-container {
+  height: 100vh;
   display: flex;
-  flex-direction: column; /* Align children vertically */
-  height: 100%;
-  overflow: auto; /* Enable scrolling for content overflow */
+  flex-direction: column;
+
+  mat-toolbar {
+    flex: 0 0 auto;
+    z-index: 2;
+    padding: 0 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .spacer {
+      flex: 1 1 auto;
+    }
+
+    .toolbar-genie-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .theme-toggle {
+      margin-right: 8px;
+    }
+  }
+
+  mat-sidenav-container {
+    flex: 1;
+    
+    mat-sidenav {
+      width: 250px;
+      background: #fafafa;
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    mat-sidenav-content {
+      background: #ffffff;
+      overflow-x: hidden;
+    }
+  }
+}
+
+// Dark theme styles
+:host-context(.dark-theme) {
+  .layout-container {
+    mat-toolbar {
+      background: #424242;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+      .theme-toggle {
+        color: #ffffff;
+      }
+    }
+
+    mat-sidenav-container {
+      mat-sidenav {
+        background: #424242;
+        border-right-color: rgba(255, 255, 255, 0.12);
+      }
+
+      mat-sidenav-content {
+        background: #303030;
+      }
+    }
+  }
 }

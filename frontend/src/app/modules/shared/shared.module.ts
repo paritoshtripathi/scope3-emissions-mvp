@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-//import { RouterModule } from '@angular/router';
-//import { AppRoutingModule } from 'src/app/app-routing.module';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import this module
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import * as echarts from 'echarts';
+
+// Material Imports
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
 import { ChatComponent } from '@components/chat/chat.component';
 import { AvatarComponent } from '@components/avatar/avatar.component';
-
-//import { RouterModule } from '@angular/router';
-//import { Router } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -22,11 +23,15 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
   imports: [
     CommonModule,
     FormsModule,
-    // RouterModule.forChild([]),
     NgxEchartsModule.forRoot({
       echarts
-    })
-
+    }),
+    // Material Modules
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDividerModule
   ],
   providers: [
     {
@@ -38,7 +43,13 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
     CommonModule,
     FormsModule,
     VisualizationSectionComponent,
-    AvatarComponent
+    AvatarComponent,
+    // Material Modules
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDividerModule
   ]
 })
 export class SharedModule { }

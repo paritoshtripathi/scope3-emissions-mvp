@@ -1,24 +1,68 @@
-<div class="dashboard-content">
-  <h2>Dashboard Content</h2>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Emissions Dashboard</h1>
+    <p class="subtitle">Monitor and analyze your scope 3 emissions data</p>
+  </div>
 
-  <ng-container *ngIf="!errorMessage; else errorTemplate">
-    <app-visualization-section 
-      [insights]="insights" 
-      [predictions]="reductionPredictions">
-    </app-visualization-section>
-  </ng-container>
+  <div class="dashboard-content">
+    <ng-container *ngIf="!errorMessage; else errorTemplate">
+      <div class="summary-cards">
+        <mat-card>
+          <mat-card-header>
+            <mat-icon mat-card-avatar>trending_down</mat-icon>
+            <mat-card-title>Total Emissions</mat-card-title>
+            <mat-card-subtitle>Current Period</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <h2>{{totalEmissions}} tCO2e</h2>
+          </mat-card-content>
+        </mat-card>
 
-  <!-- Error Template -->
-  <ng-template #errorTemplate>
-    <div class="error-message">
-      {{ errorMessage }}
-    </div>
-  </ng-template>
+        <mat-card>
+          <mat-card-header>
+            <mat-icon mat-card-avatar>show_chart</mat-icon>
+            <mat-card-title>Reduction Target</mat-card-title>
+            <mat-card-subtitle>Year-over-Year</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <h2>-{{reductionTarget}}%</h2>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-header>
+            <mat-icon mat-card-avatar>insights</mat-icon>
+            <mat-card-title>Categories Tracked</mat-card-title>
+            <mat-card-subtitle>Active Monitoring</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <h2>{{categoriesCount}}</h2>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Visualization Section -->
+      <mat-card class="visualization-card">
+        <mat-card-header>
+          <mat-card-title>Dynamic Emissions Distribution</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-visualization-section 
+            [insights]="insights" 
+            [predictions]="reductionPredictions">
+          </app-visualization-section>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+
+    <!-- Error Template -->
+    <ng-template #errorTemplate>
+      <mat-card class="error-card">
+        <mat-card-content class="error-message">
+          <mat-icon color="warn">error_outline</mat-icon>
+          <p>{{ errorMessage }}</p>
+        </mat-card-content>
+      </mat-card>
+    </ng-template>
+  </div>
 </div>
-
-
-
-<!-- <div class="dashboard-content">
-  <h2>Dashboard Content</h2>
-  <app-visualization-section></app-visualization-section>
-</div> -->

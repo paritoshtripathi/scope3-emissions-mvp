@@ -1,10 +1,20 @@
 <mat-toolbar color="primary">
-  <span>Scope 3 SaaS Dashboard</span>
+  <span class="app-title">Scope 3 SaaS Dashboard</span>
   <span class="spacer"></span>
-  <mat-icon><img
-    class="toolbar-genie-icon"
-    src="../assets/icons/genie.png"
-    alt="Reinitiate Walkthrough"
-    (click)="triggerWalkthrough()"
-  /></mat-icon>
+  
+  <!-- Theme Toggle -->
+  <button mat-icon-button 
+          [matTooltip]="(isDarkTheme$ | async) ? 'Switch to Light Theme' : 'Switch to Dark Theme'"
+          (click)="toggleTheme()"
+          class="theme-toggle">
+    <mat-icon>{{ (isDarkTheme$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  <!-- Walkthrough Button -->
+  <button mat-icon-button 
+          matTooltip="Start Walkthrough"
+          (click)="triggerWalkthrough()"
+          class="walkthrough-btn">
+    <img class="toolbar-genie-icon" src="assets/icons/genie.png" alt="Walkthrough Guide"/>
+  </button>
 </mat-toolbar>

@@ -1,19 +1,23 @@
-
 import { Component, ViewChild } from '@angular/core';
 import { AvatarComponent } from '@components/avatar/avatar.component';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-master-layout',
   templateUrl: './master-layout.component.html',
   styleUrls: ['./master-layout.component.scss'],
-  standalone:false
+  standalone: false
 })
 export class MasterLayoutComponent {
+  isDarkTheme$ = this.themeService.isDarkTheme$;
+
+  @ViewChild(AvatarComponent) avatarComponent!: AvatarComponent;
+
+  constructor(private themeService: ThemeService) {}
+
   ngOnInit(): void {
     console.log('Master layout initialized');
   }
-
-  @ViewChild(AvatarComponent) avatarComponent!: AvatarComponent;
 
   reinitiateWalkthrough(): void {
     if (this.avatarComponent) {
@@ -21,5 +25,7 @@ export class MasterLayoutComponent {
     }
   }
 
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
 }
-

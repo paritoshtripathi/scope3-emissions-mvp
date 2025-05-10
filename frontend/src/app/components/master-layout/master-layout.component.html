@@ -1,14 +1,32 @@
-<app-toolbar></app-toolbar>
 <div class="layout-container">
+  <mat-toolbar color="primary">
+    <span>Scope 3 SaaS Dashboard</span>
+    <span class="spacer"></span>
+    
+    <!-- Theme Toggle -->
+    <button mat-icon-button 
+            [matTooltip]="(isDarkTheme$ | async) ? 'Switch to Light Theme' : 'Switch to Dark Theme'"
+            (click)="toggleTheme()"
+            class="theme-toggle">
+      <mat-icon>{{ (isDarkTheme$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <!-- Walkthrough Button -->
+    <button mat-icon-button 
+            matTooltip="Start Walkthrough"
+            (click)="reinitiateWalkthrough()"
+            class="walkthrough-btn">
+      <img class="toolbar-genie-icon" src="assets/icons/genie.png" alt="Walkthrough Guide"/>
+    </button>
+  </mat-toolbar>
+
   <mat-sidenav-container>
     <mat-sidenav mode="side" opened>
       <app-sidebar></app-sidebar>
     </mat-sidenav>
     <mat-sidenav-content>
       <router-outlet></router-outlet>
-      <!-- Avatar Component -->
       <app-avatar></app-avatar>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-<!-- <app-avatar></app-avatar> Add Avatar Component -->

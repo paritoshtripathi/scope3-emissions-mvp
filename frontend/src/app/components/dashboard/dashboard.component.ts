@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from '@services/dashboard.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,45 +8,17 @@ import { DashboardService } from '@services/dashboard.service';
   standalone: false
 })
 export class DashboardComponent implements OnInit {
+  isDarkTheme$ = this.themeService.isDarkTheme$;
+  errorMessage: string | null = null;
   insights: any[] = [];
   reductionPredictions: any[] = [];
-  errorMessage: string | null = null;
+  totalEmissions: number = 1250;
+  reductionTarget: number = 15;
+  categoriesCount: number = 5;
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private themeService: ThemeService) {}
 
   ngOnInit(): void {
-    this.loadDashboardData();
-  }
-
-  loadDashboardData(): void {
-    this.dashboardService.getInsights().subscribe({
-      next: (data) => {
-        console.log('data', data);
-        this.insights = data.pieData;
-        this.reductionPredictions = data.barData;
-      },
-      error: (error) => {
-        console.error('Failed to fetch dashboard data', error);
-        this.errorMessage = 'Unable to load dashboard data. Please try again later.';
-        
-      },
-      complete: () => {
-        
-        console.log('insights', this.insights);
-        console.log('predictions', this.reductionPredictions);
-        console.log('Dashboard data fetch completed');
-      }
-   });
-  }
-
-  onWalkthroughComplete(): void {
-    console.log('Walkthrough completed');
-    // Additional actions post walkthrough, if any
-  }
-
-  onChatToggle(): void {
-    // Emit an event to the AppComponent or call a shared service to trigger visibility
-    const appEvent = new CustomEvent('toggleChat', { detail: true });
-    window.dispatchEvent(appEvent); // Dispatch event to toggle chat visibility
+    console.log('Dashboard initialized');
   }
 }

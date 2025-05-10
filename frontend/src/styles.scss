@@ -1,11 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500,700&display=swap");
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 html, body {
   height: 100%;
   margin: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 body {
@@ -35,4 +35,26 @@ body.dark-theme {
     background-color: #424242;
     color: #ffffff;
   }
+
+  .mat-drawer-container {
+    background-color: #303030;
+    color: #ffffff;
+  }
+
+  .mat-list-base .mat-list-item {
+    color: #ffffff;
+  }
+
+  .mat-divider {
+    border-top-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.mat-toolbar {
+  position: relative;
+  z-index: 2;
+}
+
+.mat-sidenav-container {
+  background: inherit;
 }

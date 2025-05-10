@@ -6,7 +6,7 @@ def fetch_latest_uploaded_data(file_id='demo'):
     conn = psycopg2.connect(
         dbname="scope3",
         user="postgres",
-        password="postgres",
+        password="P@ssw0rd",
         host="host.docker.internal",
         port="5432"
     )

@@ -5,7 +5,7 @@ const pool = require('../models/db');
 const axios = require("axios");
 
 // Data ingestion route
-router.post("/ingest", async (req, res) => {
+router.post("/ingestemissions", async (req, res) => {
     try {
         const { data } = req.body;
 

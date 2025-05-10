@@ -29,4 +29,4 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MasterLayoutComponent
   ]
 })
-export class MasterLayoutModule {}
+export class MasterLayoutModule { }

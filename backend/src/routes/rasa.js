@@ -4,7 +4,7 @@ const axios = require('axios');
 const router = express.Router();
 
 // Rasa server URL
-const RASA_URL = 'http://rasa:5005/webhooks/rest/webhook';
+const RASA_URL = 'http://localhost:5005/webhooks/rest/webhook';
 
 // Webhook to forward user messages to Rasa
 router.post('/', async (req, res) => {

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  ai-ml:
+    build:
+      context: ../ai-ml
+      dockerfile: Dockerfile.ai-ml
+    container_name: ai-ml
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../ai-ml:/app/
+      - ../ai-ml/models:/app/output    
+    environment:
+      USE_INFERENCE_API: "true"              
+      LOCAL_MODEL_NAME: "distilbert-base-uncased"  
+      INFERENCE_API_URL: "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
+      HF_API_TOKEN: "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"
+   
+  postgres:
+    image: postgres:latest
+    container_name: scope3_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB: scope3
+    ports:
+      - "5433:5432"
+    volumes:
+      - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/1_init.sql
+      - ../database/postgres/migrations/003_add_upload_tables.sql:/docker-entrypoint-initdb.d/2_migrations.sql
+      - ../database/postgres/data:/var/lib/postgresql/data
+
+  data-insight-agent:
+    build:
+      context: ../ai-ml/agents/data_insight_agent
+    ports:
+      - "5001:5000"
+
+  narrative-agent:
+    build:
+      context: ../ai-ml/agents/narrative_agent
+    ports:
+      - "5002:5000"

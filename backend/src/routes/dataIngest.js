@@ -39,8 +39,8 @@ router.post('/ingest', upload.single('file'), async (req, res) => {
     const fileId = result.rows[0].id;
 
     // Parse and insert rows
-    const rows = await parseCsvToJson(filePath);
-    for (const row of rows) {
+    const parsedData = await parseCsvToJson(filePath);
+    for (const row of parsedData.data) {
       await pool.query(
         `INSERT INTO uploaded_records (file_id, data) VALUES ($1, $2)`,
         [fileId, row]
@@ -50,9 +50,9 @@ router.post('/ingest', upload.single('file'), async (req, res) => {
     res.json({
       message: 'File uploaded and data saved successfully.',
       fileId,
-      totalRecords: rows.length,
-      preview: rows.slice(0, 5),
-      columns: rows.length ? Object.keys(rows[0]) : []
+      totalRecords: parsedData.data.length,
+      preview: parsedData.data.slice(0, 5),
+      columns: parsedData.headers
     });
   } catch (err) {
     console.error('Error during ingestion:', err);

@@ -9,7 +9,7 @@ router.post("/query", async (req, res) => {
     }
 
     try {
-        const response = await axios.post("http://ai-ml:5000/query", { question });
+        const response = await axios.post("http://localhost:5000/query", { question });
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ error: error.message });

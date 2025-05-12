@@ -6,7 +6,7 @@ const router = express.Router();
 // Route to call AI/ML microservice
 router.post("/predict", async (req, res) => {
     try {
-        const response = await axios.post("http://ai-ml:5000/predict", req.body);
+        const response = await axios.post("http://localhost:5000/predict", req.body);
         res.json(response.data);
     } catch (error) {
         console.error("AI/ML service error:", error.message);

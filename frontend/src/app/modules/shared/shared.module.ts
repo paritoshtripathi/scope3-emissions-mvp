@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import * as echarts from 'echarts';
+import { HttpClientModule } from '@angular/common/http';
 
 // Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -13,18 +15,26 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
 import { AvatarComponent } from '@components/avatar/avatar.component';
+import { ChatComponent } from '@components/chat/chat.component';
+import { SidebarComponent } from '@components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     VisualizationSectionComponent,
-    AvatarComponent
+    AvatarComponent,
+    ChatComponent,
+    SidebarComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
+    HttpClientModule,
     NgxEchartsModule.forRoot({
       echarts
     }),
@@ -36,7 +46,9 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
     MatDividerModule,
     MatListModule,
     MatToolbarModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [
     {
@@ -47,8 +59,12 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
   exports: [
     CommonModule,
     FormsModule,
+    RouterModule,
+    HttpClientModule,
     VisualizationSectionComponent,
     AvatarComponent,
+    ChatComponent,
+    SidebarComponent,
     // Material Modules
     MatCardModule,
     MatButtonModule,
@@ -57,7 +73,9 @@ import { AvatarComponent } from '@components/avatar/avatar.component';
     MatDividerModule,
     MatListModule,
     MatToolbarModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatInputModule
   ]
 })
 export class SharedModule { }

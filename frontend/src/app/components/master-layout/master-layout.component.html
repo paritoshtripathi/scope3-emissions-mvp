@@ -1,6 +1,6 @@
 <div class="layout-container">
   <mat-toolbar color="primary">
-    <span>Scope 3 SaaS Dashboard</span>
+    <span>Scope 3 SaaS Platform</span>
     <span class="spacer"></span>
     
     <!-- Theme Toggle -->
@@ -16,7 +16,15 @@
             matTooltip="Start Walkthrough"
             (click)="reinitiateWalkthrough()"
             class="walkthrough-btn">
-      <img class="toolbar-genie-icon" src="assets/icons/genie.png" alt="Walkthrough Guide"/>
+      <mat-icon>tips_and_updates</mat-icon>
+    </button>
+
+    <!-- Logout Button -->
+    <button mat-icon-button 
+            matTooltip="Logout"
+            (click)="logout()"
+            class="logout-btn">
+      <mat-icon>logout</mat-icon>
     </button>
   </mat-toolbar>
 
@@ -27,6 +35,7 @@
     <mat-sidenav-content>
       <router-outlet></router-outlet>
       <app-avatar></app-avatar>
+      <app-chat [visible]="true"></app-chat>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

@@ -8,19 +8,33 @@
     z-index: 2;
     padding: 0 16px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: var(--primary-color);
+    color: var(--on-primary-color);
 
     .spacer {
       flex: 1 1 auto;
     }
 
-    .toolbar-genie-icon {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
+    button.mat-icon-button {
+      margin-left: 8px;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
     }
 
-    .theme-toggle {
-      margin-right: 8px;
+    .theme-toggle, .walkthrough-btn, .logout-btn {
+      opacity: 0.9;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 
@@ -29,13 +43,14 @@
     
     mat-sidenav {
       width: 250px;
-      background: #fafafa;
-      border-right: 1px solid rgba(0, 0, 0, 0.12);
+      background: var(--surface-color);
+      border-right: 1px solid var(--border-color);
     }
 
     mat-sidenav-content {
-      background: #ffffff;
+      background: var(--background-color);
       overflow-x: hidden;
+      position: relative;
     }
   }
 }
@@ -44,23 +59,31 @@
 :host-context(.dark-theme) {
   .layout-container {
     mat-toolbar {
-      background: #424242;
-      color: #ffffff;
+      background: var(--dark-surface);
+      color: var(--dark-text);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
-      .theme-toggle {
-        color: #ffffff;
+      button.mat-icon-button {
+        color: var(--dark-icon);
+        
+        &:hover {
+          color: white;
+        }
+
+        mat-icon {
+          transition: color 0.2s ease;
+        }
       }
     }
 
     mat-sidenav-container {
       mat-sidenav {
-        background: #424242;
-        border-right-color: rgba(255, 255, 255, 0.12);
+        background: var(--dark-surface);
+        border-right-color: var(--dark-border);
       }
 
       mat-sidenav-content {
-        background: #303030;
+        background: var(--dark-background);
       }
     }
   }

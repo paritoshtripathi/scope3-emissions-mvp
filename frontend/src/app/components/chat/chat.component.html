@@ -1,13 +1,14 @@
-<!-- <div class="chat-overlay">
-
+<div class="chat-overlay" *ngIf="showChat">
   <div class="chat-icon" *ngIf="isCollapsed" (click)="toggleChat()">
-    💬
+    <img [src]="avatarImage" alt="Chat Avatar" class="chat-avatar"/>
   </div>
-
 
   <div *ngIf="!isCollapsed" class="chat-window">
     <div class="chat-header">
-      Chat with Us
+      <div class="header-content">
+        <img [src]="avatarImage" alt="Chat Avatar" class="header-avatar"/>
+        <span>Chat Assistant</span>
+      </div>
       <button (click)="toggleChat()">✕</button>
     </div>
     <div class="messages">
@@ -16,8 +17,8 @@
       </div>
     </div>
     <div class="input-area">
-      <input [(ngModel)]="userMessage" placeholder="Type your message..." />
+      <input [(ngModel)]="userMessage" placeholder="Type your message..." (keyup.enter)="sendMessage()"/>
       <button (click)="sendMessage()" [disabled]="!userMessage.trim()">Send</button>
     </div>
   </div>
-</div> -->
+</div>

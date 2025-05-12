@@ -25,7 +25,9 @@
     "ngx-echarts": "^14.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.15.0",
+    "@auth0/angular-jwt": "^5.2.0",
+    "@angular/material": "^19.2.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.6",

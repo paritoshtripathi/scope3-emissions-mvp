@@ -1,60 +1,201 @@
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@use '@angular/material' as mat;
 
+// Custom theme variables
+:root {
+  // Light theme
+  --primary-color: #3f51b5;
+  --primary-lighter-color: #c5cae9;
+  --primary-darker-color: #303f9f;
+  --on-primary-color: #ffffff;
+  --surface-color: #fafafa;
+  --background-color: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.12);
+  --text-color: rgba(0, 0, 0, 0.87);
+  --secondary-text-color: rgba(0, 0, 0, 0.54);
+  --icon-color: rgba(0, 0, 0, 0.54);
+
+  // Modern Dark theme
+  --dark-primary: #7289da;
+  --dark-surface: #2f3136;
+  --dark-background: #36393f;
+  --dark-card: #40444b;
+  --dark-border: rgba(255, 255, 255, 0.1);
+  --dark-text: #dcddde;
+  --dark-secondary-text: #8e9297;
+  --dark-icon: #b9bbbe;
+  --dark-hover: #4f545c;
+  --dark-active: #7289da;
+
+  // Chart colors
+  --chart-light-colors: #3f51b5, #4caf50, #f44336, #ff9800, #9c27b0;
+  --chart-dark-colors: #7289da, #43b581, #f04747, #faa61a, #b9bbbe;
+}
+
+// Global styles
 html, body {
   height: 100%;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 body {
-  background-color: #fafafa;
-  color: rgba(0, 0, 0, 0.87);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+// Dark theme styles
 body.dark-theme {
-  background-color: #303030;
-  color: #ffffff;
+  background-color: var(--dark-background);
+  color: var(--dark-text);
 
-  .mat-app-background {
-    background-color: #303030;
+  // Material overrides
+  .mat-toolbar {
+    background: var(--dark-surface);
+    color: var(--dark-text);
   }
 
-  .mat-toolbar {
-    background: #424242;
-    color: #ffffff;
+  .mat-sidenav {
+    background: var(--dark-surface);
+    border-color: var(--dark-border);
+  }
+
+  .mat-sidenav-content {
+    background: var(--dark-background);
   }
 
   .mat-card {
-    background: #424242;
-    color: #ffffff;
+    background: var(--dark-card);
+    color: var(--dark-text);
   }
 
-  .mat-drawer {
-    background-color: #424242;
-    color: #ffffff;
+  // Chart theme overrides
+  .echarts {
+    background: var(--dark-card) !important;
+
+    // Text colors
+    text {
+      fill: var(--dark-text) !important;
+    }
+
+    // Axis lines
+    .echarts-axis-line {
+      stroke: var(--dark-border) !important;
+    }
+
+    // Grid lines
+    .echarts-grid-line {
+      stroke: var(--dark-border) !important;
+    }
+
+    // Legend
+    .echarts-legend-text {
+      fill: var(--dark-text) !important;
+    }
+
+    // Tooltip
+    .echarts-tooltip {
+      background: var(--dark-card) !important;
+      border-color: var(--dark-border) !important;
+      color: var(--dark-text) !important;
+    }
   }
 
-  .mat-drawer-container {
-    background-color: #303030;
-    color: #ffffff;
+  // Chart series colors
+  .echarts-series {
+    &:nth-child(1) { color: var(--chart-dark-colors, 0) !important; }
+    &:nth-child(2) { color: var(--chart-dark-colors, 1) !important; }
+    &:nth-child(3) { color: var(--chart-dark-colors, 2) !important; }
+    &:nth-child(4) { color: var(--chart-dark-colors, 3) !important; }
+    &:nth-child(5) { color: var(--chart-dark-colors, 4) !important; }
   }
 
-  .mat-list-base .mat-list-item {
-    color: #ffffff;
-  }
+  // Navigation
+  .mat-nav-list {
+    a.mat-list-item {
+      color: var(--dark-text) !important;
 
-  .mat-divider {
-    border-top-color: rgba(255, 255, 255, 0.12);
+      .mat-list-item-content {
+        color: var(--dark-text) !important;
+      }
+
+      mat-icon {
+        color: var(--dark-icon) !important;
+      }
+
+      &:hover {
+        background-color: var(--dark-hover);
+        mat-icon {
+          color: var(--dark-active) !important;
+        }
+      }
+
+      &.active-link {
+        background-color: var(--dark-active);
+        opacity: 0.8;
+        mat-icon {
+          color: white !important;
+        }
+      }
+    }
   }
 }
 
-.mat-toolbar {
-  position: relative;
-  z-index: 2;
+// Material overrides
+.mat-card {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
 }
 
-.mat-sidenav-container {
-  background: inherit;
+.mat-button, .mat-raised-button {
+  border-radius: 20px !important;
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.dark-theme {
+  ::-webkit-scrollbar-thumb {
+    background: var(--dark-hover);
+
+    &:hover {
+      background: var(--dark-active);
+    }
+  }
+}
+
+// Utility classes
+.spacer {
+  flex: 1 1 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,13 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { AiMlService } from '@services/ai-ml.service';
 import { AppComponent } from './app.component';
-import { MasterLayoutModule } from '@modules/masterlayout/masterlayout.module';
-import { SharedModule } from '@modules/shared/shared.module';
+import { JwtModule } from '@auth0/angular-jwt';
+import { environment } from '../environments/environment';
+import { RouterModule } from '@angular/router';
+import { SharedModule } from './modules/shared/shared.module';
+import { MasterLayoutModule } from './modules/masterlayout/masterlayout.module';
+import { AuthInterceptor } from './modules/auth/interceptors/auth.interceptor';
+
+// Function to get JWT token
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 
 @NgModule({
   declarations: [
@@ -16,14 +23,25 @@ import { SharedModule } from '@modules/shared/shared.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
     AppRoutingModule,
+    HttpClientModule,
+    RouterModule,
+    SharedModule,
     MasterLayoutModule,
-    SharedModule
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: [environment.apiUrl.replace('http://', '').replace('https://', '')],
+        disallowedRoutes: [`${environment.apiUrl}/auth`]
+      }
+    })
   ],
   providers: [
-    AiMlService,
-    provideHttpClient(withInterceptorsFromDi())
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

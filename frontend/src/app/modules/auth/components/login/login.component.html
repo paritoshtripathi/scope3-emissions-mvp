@@ -1,0 +1,46 @@
+<div class="login-container">
+  <div class="singapore-bg"></div>
+  
+  <div class="login-card-container">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Welcome Back! 👋</mat-card-title>
+        <mat-card-subtitle>Sign in to continue to Scope3 Emissions</mat-card-subtitle>
+      </mat-card-header>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="Enter your email">
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" 
+                placeholder="Enter your password">
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" 
+                [disabled]="loginForm.invalid">
+          Sign In
+        </button>
+      </form>
+
+      <mat-card-footer>
+        <p>Don't have an account? <a routerLink="/auth/register">Sign up</a></p>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</div>

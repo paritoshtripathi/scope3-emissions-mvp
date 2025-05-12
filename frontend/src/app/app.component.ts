@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   standalone: false
 })
 export class AppComponent {
-  title = 'Scope 3 SaaS Dashboard';
+  title = 'Scope3 Emissions';
 }

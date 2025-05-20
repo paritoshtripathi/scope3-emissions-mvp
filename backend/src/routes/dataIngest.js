@@ -4,17 +4,16 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
 const pool = require('../models/db');
-const { insertEmissionsData } = require("../models/emissionsModel"); // Correct import path
+const { insertEmissionsData } = require("../models/emissionsModel");
 const axios = require("axios");
 const { parseCsvToJson } = require('../utils/parseUtils');
-
+const ragClient = require('../utils/ragClient'); // Add RAG client
 
 const router = express.Router();
 
 // File storage
 const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-
 
 // Multer config
 const storage = multer.diskStorage({
@@ -47,6 +46,23 @@ router.post('/ingest', upload.single('file'), async (req, res) => {
       );
     }
 
+    // Process with RAG
+    try {
+      const formData = new FormData();
+      formData.append('file', fs.createReadStream(filePath));
+      formData.append('category', category);
+      await ragClient.processFile(formData);
+      
+      // Update ingestion_log with RAG processing status
+      await pool.query(
+        `UPDATE ingestion_log SET rag_processed = true WHERE id = $1`,
+        [fileId]
+      );
+    } catch (ragError) {
+      console.error('RAG processing error:', ragError);
+      // Continue with regular ingestion even if RAG fails
+    }
+
     res.json({
       message: 'File uploaded and data saved successfully.',
       fileId,
@@ -60,7 +76,7 @@ router.post('/ingest', upload.single('file'), async (req, res) => {
   }
 });
 
-// Fetch emission insights
+// Existing routes remain unchanged
 router.get("/insights", async (req, res) => {
     try {
         const query = `
@@ -79,11 +95,10 @@ router.get("/insights", async (req, res) => {
     }
 });
 
-// Get all uploaded file history
 router.get('/history', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, filename, category, source, upload_time FROM ingestion_log ORDER BY upload_time DESC`
+      `SELECT id, filename, category, source, upload_time, rag_processed FROM ingestion_log ORDER BY upload_time DESC`
     );
     res.json(result.rows);
   } catch (err) {
@@ -92,7 +107,6 @@ router.get('/history', async (req, res) => {
   }
 });
 
-// Get ingested records by file ID
 router.get('/query/:fileId', async (req, res) => {
   const { fileId } = req.params;
   try {
@@ -115,8 +129,6 @@ router.get('/query/:fileId', async (req, res) => {
   }
 });
 
-
-// Predict emission reductions
 router.post("/predict", async (req, res) => {
     try {
         const { category, reduction_percentage } = req.body;
@@ -152,27 +164,39 @@ router.post("/predict", async (req, res) => {
     }
 });
 
-// Generate explanation route
+// Enhanced generateExplanation with RAG
 router.post('/generateExplanation', async (req, res) => {
   const { context } = req.body;
   console.log('IN GENERATE EXPLANATION', context);
-  const prompt = `
-    You are a maritime sustainability expert specializing in Scope 3 emissions. 
-    Based on the following data: ${JSON.stringify(context)}, generate actionable insights and reduction strategies.
-  `;
-  console.log('Generating explanation with prompt...1',prompt);
+  
   try {
-    console.log('Generating explanation with prompt...2',prompt);
-    const response = await axios.post('http://localhost:5000/predict_with_template', { prompt });
-    res.json(response.data.result); // Result from Llama 3
+    // First try RAG-enhanced response
+    const ragResponse = await ragClient.chat(JSON.stringify(context));
+    
+    // If RAG fails or no relevant context found, fallback to original LLM
+    if (!ragResponse || !ragResponse.primary_context || ragResponse.primary_context.length === 0) {
+      console.log('Falling back to original LLM');
+      const prompt = `
+        You are a maritime sustainability expert specializing in Scope 3 emissions. 
+        Based on the following data: ${JSON.stringify(context)}, generate actionable insights and reduction strategies.
+      `;
+      const response = await axios.post('http://localhost:5000/predict_with_template', { prompt });
+      return res.json(response.data.result);
+    }
+    
+    // Use RAG response
+    return res.json({
+      result: ragResponse.message,
+      sources: ragResponse.sources,
+      context: ragResponse.context
+    });
+    
   } catch (error) {
-    console.log('Generating explanation with prompt...3',prompt);
     console.error('Error generating explanation:', error);
     res.status(500).send('Internal Server Error');
   }
 });
 
-// Data ingestion route
 router.post("/ingestemissions", async (req, res) => {
     try {
         const { data } = req.body;

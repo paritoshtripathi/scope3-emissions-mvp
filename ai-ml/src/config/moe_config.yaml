@@ -1,0 +1,117 @@
+# Mixture of Experts Configuration
+
+# Global settings
+defaults:
+  min_confidence: 0.7
+  max_experts: 3
+  routing_strategy: "weighted"
+  fallback_expert: "DataInsightExpert"
+
+# Expert definitions
+experts:
+  ESGExpert:
+    domain: "esg_compliance"
+    confidence_threshold: 0.7
+    specialization:
+      - "ESG"
+      - "sustainability"
+      - "compliance"
+    llm_config:
+      model: "llama3"
+      temperature: 0.7
+      domain_context: "ESG and sustainability"
+
+  EmissionsExpert:
+    domain: "emissions_calculation"
+    confidence_threshold: 0.75
+    specialization:
+      - "emissions"
+      - "carbon"
+      - "scope3"
+    llm_config:
+      model: "llama3"
+      temperature: 0.2
+      domain_context: "emissions calculation and analysis"
+
+  RegulatoryExpert:
+    domain: "regulatory_compliance"
+    confidence_threshold: 0.8
+    specialization:
+      - "regulation"
+      - "policy"
+      - "standards"
+    llm_config:
+      model: "llama3"
+      temperature: 0.3
+      domain_context: "regulatory compliance"
+
+  DataInsightExpert:
+    domain: "data_analysis"
+    confidence_threshold: 0.7
+    specialization:
+      - "data"
+      - "analysis"
+      - "insights"
+    llm_config:
+      model: "llama3"
+      temperature: 0.4
+      domain_context: "data analysis and insights"
+
+  NarrativeExpert:
+    domain: "narrative_generation"
+    confidence_threshold: 0.7
+    specialization:
+      - "narrative"
+      - "explanation"
+      - "summary"
+    llm_config:
+      model: "llama3"
+      temperature: 0.8
+      domain_context: "narrative generation"
+
+# Performance tracking settings
+performance:
+  history_size: 100
+  metrics:
+    - "success_rate"
+    - "response_time"
+    - "confidence"
+  adaptation_rate: 0.1
+  min_samples: 10
+
+# Routing settings
+routing:
+  strategies:
+    weighted:
+      specialization_weight: 0.4
+      performance_weight: 0.3
+      context_weight: 0.3
+    threshold:
+      min_confidence: 0.7
+      max_experts: 2
+    ensemble:
+      min_experts: 2
+      aggregation: "weighted_average"
+
+# Domain-specific settings
+domains:
+  scope3:
+    required_experts:
+      - "EmissionsExpert"
+      - "DataInsightExpert"
+    min_confidence: 0.8
+    context_boost: 1.2
+
+  regulatory:
+    required_experts:
+      - "RegulatoryExpert"
+      - "ESGExpert"
+    min_confidence: 0.85
+    context_boost: 1.1
+
+  sustainability:
+    required_experts:
+      - "ESGExpert"
+      - "EmissionsExpert"
+    min_confidence: 0.75
+    context_boost: 1.0

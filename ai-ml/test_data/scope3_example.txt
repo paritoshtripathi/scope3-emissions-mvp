@@ -1,0 +1,19 @@
+Scope 3 emissions are indirect greenhouse gas emissions that occur in a company's value chain. These emissions often represent the largest source of emissions for companies, accounting for up to 70% of their carbon footprint.
+
+Common sources of Scope 3 emissions include:
+1. Purchased goods and services
+2. Business travel
+3. Employee commuting
+4. Waste disposal
+5. Transportation and distribution
+6. Use of sold products
+7. End-of-life treatment of sold products
+8. Investments
+
+Companies can reduce their Scope 3 emissions through:
+- Supplier engagement programs
+- Sustainable procurement policies
+- Remote work policies
+- Waste reduction initiatives
+- Efficient logistics planning
+- Product lifecycle optimization

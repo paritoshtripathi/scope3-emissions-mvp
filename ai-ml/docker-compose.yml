@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  rag-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-ml
+    container_name: rag-api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=src.rag.api.app:app
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PORT=5000
+      - PYTHONPATH=/app
+      - LOG_LEVEL=DEBUG
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./src:/app/src
+      - ./kb:/app/kb
+      - ./.env:/app/.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped

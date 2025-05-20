@@ -1,0 +1,60 @@
+# Default LLM Configuration
+
+embedding_model:
+  name: "BAAI/bge-large-en-v1.5"
+  batch_size: 32
+  cache_size: 100
+
+llm_defaults:
+  max_retries: 3
+  retry_delay: 1.0
+  timeout: 30.0
+  default_model: "llama3"
+
+models:
+  llama3:
+    model_id: "meta-llama/Meta-Llama-3-8B-Instruct"
+    provider: "huggingface"
+    parameters:
+      temperature: 0.2
+      max_new_tokens: 250
+      stop: ["[91]", "Technical Guidance"]
+      task: "text-generation"
+    domain_prompts:
+      scope3: |
+        You are an expert in Scope 3 emissions analysis.
+        Context: {context}
+        Question: {question}
+        Provide a detailed analysis focusing on emissions impact:
+      
+      regulatory: |
+        You are a regulatory compliance expert.
+        Context: {context}
+        Question: {question}
+        Analyze the compliance implications:
+      
+      data_analysis: |
+        You are a data analysis expert.
+        Context: {context}
+        Question: {question}
+        Provide data-driven insights:
+
+  llama2-70b:
+    model_id: "meta-llama/Llama-2-70b-chat-hf"
+    provider: "huggingface"
+    parameters:
+      temperature: 0.7
+      max_new_tokens: 500
+      task: "text-generation"
+    domain_prompts:
+      scope3: |
+        As a Scope 3 emissions expert, analyze:
+        Context: {context}
+        Question: {question}
+        Provide comprehensive insights:
+      
+      sustainability: |
+        As a sustainability expert, evaluate:
+        Context: {context}
+        Question: {question}
+        Provide actionable recommendations:

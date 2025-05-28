@@ -1,4 +1,4 @@
-# Default LLM Configuration
+# Advanced LLM Configuration with Multi-Provider Support
 
 embedding_model:
   name: "BAAI/bge-large-en-v1.5"
@@ -9,52 +9,120 @@ llm_defaults:
   max_retries: 3
   retry_delay: 1.0
   timeout: 30.0
-  default_model: "llama3"
+  default_model: "gemini"
 
 models:
   llama3:
-    model_id: "meta-llama/Meta-Llama-3-8B-Instruct"
+    model_id: "meta-llama/Llama-3.1-8B-Instruct"
     provider: "huggingface"
+    inference_mode: "api"
     parameters:
       temperature: 0.2
       max_new_tokens: 250
-      stop: ["[91]", "Technical Guidance"]
+      top_p: 0.9
+      repetition_penalty: 1.1
+    domain_prompts:
+      scope3: |
+        <s>[INST] You are an expert in Scope 3 emissions analysis. 
+        Given this context: {context}
+        Answer this question: {question}
+        Provide a detailed analysis focusing on emissions impact, using specific examples and data when available.
+        Be precise and technical, but explain concepts clearly. [/INST]
+
+      data_analysis: |
+        <s>[INST] You are a data analysis expert specializing in emissions data.
+        Context: {context}
+        Question: {question}
+        Provide data-driven insights, focusing on trends, patterns, and actionable recommendations. [/INST]
+
+  zephyr:
+    model_id: "HuggingFaceH4/zephyr-7b-beta"
+    provider: "huggingface"
+    inference_mode: "local"  # Fallback model for local inference
+    parameters:
+      temperature: 0.1
+      max_new_tokens: 300
+      top_p: 0.95
+      repetition_penalty: 1.05
       task: "text-generation"
     domain_prompts:
       scope3: |
-        You are an expert in Scope 3 emissions analysis.
-        Context: {context}
+        <|system|>You are an advanced AI expert in Scope 3 emissions analysis.
+        Your task is to provide precise, technical, yet clear analysis of emissions-related queries.</s>
+        <|user|>Context: {context}
         Question: {question}
-        Provide a detailed analysis focusing on emissions impact:
-      
-      regulatory: |
-        You are a regulatory compliance expert.
-        Context: {context}
-        Question: {question}
-        Analyze the compliance implications:
-      
-      data_analysis: |
-        You are a data analysis expert.
-        Context: {context}
-        Question: {question}
-        Provide data-driven insights:
+        Please provide a comprehensive analysis that includes:
+        1. Direct answer to the question
+        2. Technical explanation
+        3. Practical implications
+        4. Recommendations if applicable</s>
+        <|assistant|>
 
-  llama2-70b:
-    model_id: "meta-llama/Llama-2-70b-chat-hf"
+  mistral:
+    model_id: "mistralai/Mistral-7B-Instruct-v0.2"
     provider: "huggingface"
+    inference_mode: "local"  # Another local fallback option
+    parameters:
+      temperature: 0.3
+      max_new_tokens: 500
+      top_p: 0.9
+      repetition_penalty: 1.1
+      task: "text-generation"
+    domain_prompts:
+      scope3: |
+        <s>[INST] As a Scope 3 emissions expert, analyze:
+        Context: {context}
+        Question: {question}
+        Focus on practical implications and actionable insights. [/INST]
+
+  gemini:
+    model_id: "gemini-2.0-flash"
+    provider: "google"
+    inference_mode: "gemini"
     parameters:
       temperature: 0.7
-      max_new_tokens: 500
-      task: "text-generation"
+      max_new_tokens: 512
+      top_p: 0.95
+      repetition_penalty: 1.1
+      api_key: "AIzaSyBXn8ccMdo_RlxK7pkqdOrTsbQiutljTbc"  # Default key, override with GEMINI_API_KEY env var
     domain_prompts:
       scope3: |
-        As a Scope 3 emissions expert, analyze:
+        You are a Scope 3 emissions expert. Using the following context:
+        {context}
+        Please answer this question:
+        {question}
+        Provide detailed analysis with practical insights.
+      data_analysis: |
+        You are a data analysis expert specializing in emissions data.
         Context: {context}
         Question: {question}
-        Provide comprehensive insights:
-      
-      sustainability: |
-        As a sustainability expert, evaluate:
-        Context: {context}
-        Question: {question}
-        Provide actionable recommendations:
+        Analyze the data and provide:
+        1. Key trends and patterns
+        2. Statistical insights
+        3. Actionable recommendations
+        4. Potential areas for improvement
+
+moe_configuration:
+  routing_strategy: "weighted"
+  expert_weights:
+    scope3: 0.4
+    data_analysis: 0.3
+    regulatory: 0.3
+  fallback_chain:
+    - zephyr  # Try local first
+    - mistral # Another local option
+    - llama3  # Try API as last resort
+    - gemini  # Added Gemini to fallback chain
+  context_enhancement:
+    enable_cross_model_verification: true
+    confidence_threshold: 0.7
+    max_context_length: 2048
+
+api_configuration:
+  timeout: 30
+  batch_size: 1
+  retry_strategy:
+    max_attempts: 3
+    initial_delay: 1
+    max_delay: 10
+    exponential_backoff: true

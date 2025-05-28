@@ -1,76 +1,160 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { ChatService } from '../../services/chat.service';
+import { ChatMessage, ChatState, MessageType } from '../../services/chat.types';
 import { AvatarService } from '@services/avatar.service';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+
+interface ChatToggleEvent extends CustomEvent {
+  detail: boolean;
+}
 
 @Component({
-    selector: 'app-chat',
-    templateUrl: './chat.component.html',
-    styleUrls: ['./chat.component.scss'],
-    standalone: false
+  selector: 'app-chat',
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.scss'],
+  standalone: false
 })
 export class ChatComponent implements OnInit, OnDestroy {
   @Input() visible: boolean = false;
+  @Output() updateDashboard = new EventEmitter<string>();
+  
+  messages: ChatMessage[] = [];
+  currentMessage = '';
+  isTourMode = true;
   isCollapsed = true;
-  userMessage: string = '';
-  messages: { user: string; text: string }[] = [];
-  backendUrl: string = 'http://localhost:5000/query';
   avatarImage: string = '../assets/icons/avatar1.png';
   showChat: boolean = false;
-  private subscription: Subscription = new Subscription();
+  MessageType = MessageType;
+  private destroy$ = new Subject<void>();
 
-  @Output() updateDashboard = new EventEmitter<string>();
+  @ViewChild('chatMessages') private chatMessagesRef!: ElementRef;
+  @ViewChild('messageInput') private messageInput!: ElementRef;
 
   constructor(
-    private http: HttpClient,
+    private chatService: ChatService,
     private avatarService: AvatarService
-  ) {}
-
-  ngOnInit() {
-    // Listen for avatar walkthrough completion
-    window.addEventListener('toggleChat', this.handleToggleChat.bind(this));
+  ) {
+    this.handleToggleChat = this.handleToggleChat.bind(this);
   }
 
-  ngOnDestroy() {
-    window.removeEventListener('toggleChat', this.handleToggleChat.bind(this));
-    this.subscription.unsubscribe();
+  ngOnInit(): void {
+    // Start with chat invisible
+    this.visible = false;
+    this.showChat = false;
+    
+    // Subscribe to chat state
+    this.chatService.getState()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((state: ChatState) => {
+        this.messages = state.messages;
+        
+        // Handle tour mode changes
+        if (this.isTourMode !== state.isTourMode) {
+          this.isTourMode = state.isTourMode;
+          if (state.isTourMode) {
+            // Hide chat when tour starts
+            this.visible = false;
+            this.showChat = false;
+            this.isCollapsed = true;
+          }
+        }
+        
+        if (!this.isCollapsed) {
+          this.scrollToBottom();
+        }
+        
+        // Emit last non-tour message to update dashboard
+        const lastMessage = [...state.messages].reverse()
+          .find(msg => !msg.isTourMessage && msg.user === MessageType.BOT);
+        if (lastMessage) {
+          this.updateDashboard.emit(lastMessage.text);
+        }
+      });
+
+    // Listen for avatar tour messages
+    this.avatarService.getTourMessages()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(message => {
+        if (message) {
+          this.chatService.addTourMessage(message);
+          // Hide chat during tour
+          this.visible = false;
+          this.showChat = false;
+          this.isCollapsed = true;
+        }
+      });
+
+    // Listen for chat toggle
+    window.addEventListener('toggleChat', this.handleToggleChat as EventListener);
+    
+    // Listen for tour completion
+    this.avatarService.getTourStatus()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isComplete => {
+        if (isComplete) {
+          this.isTourMode = false;
+          this.showChat = true;
+          this.visible = true;
+          this.isCollapsed = true;
+        }
+      });
   }
 
-  handleToggleChat(event: any) {
-    this.showChat = event.detail;
+  ngOnDestroy(): void {
+    window.removeEventListener('toggleChat', this.handleToggleChat as EventListener);
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private handleToggleChat(event: Event): void {
+    const customEvent = event as ChatToggleEvent;
+    this.showChat = customEvent.detail;
+    this.visible = customEvent.detail;
     if (!this.showChat) {
       this.isCollapsed = true;
     }
   }
 
   toggleChat(): void {
-    if (this.showChat) {
-      this.isCollapsed = !this.isCollapsed;
+    console.log('Toggle chat clicked', { isTourMode: this.isTourMode, isCollapsed: this.isCollapsed });
+    
+    // Don't allow expanding during tour mode
+    if (this.isTourMode) {
+      return;
+    }
+
+    this.isCollapsed = !this.isCollapsed;
+
+    if (!this.isCollapsed) {
+      setTimeout(() => {
+        this.scrollToBottom();
+        if (this.messageInput) {
+          this.messageInput.nativeElement.focus();
+        }
+      }, 300);
     }
   }
 
-  sendMessage(): void {
-    if (this.userMessage.trim()) {
-      // Add user message to the chat
-      this.messages.push({ user: 'User', text: this.userMessage });
+  async sendMessage(): Promise<void> {
+    if (this.currentMessage.trim()) {
+      await this.chatService.sendMessage(this.currentMessage);
+      this.currentMessage = '';
+      if (this.messageInput) {
+        this.messageInput.nativeElement.focus();
+      }
+    }
+  }
 
-      // Send message to AI-ML backend
-      this.subscription.add(
-        this.http
-          .post<any>(this.backendUrl, { question: this.userMessage })
-          .subscribe({
-            next: (response) => {
-              const botResponse = response.response || 'No response from AI.';
-              this.updateDashboard.emit(botResponse);
-              this.messages.push({ user: 'Bot', text: botResponse });
-            },
-            error: () => {
-              this.messages.push({ user: 'Bot', text: 'Error connecting to server.' });
-            }
-          })
-      );
-
-      this.userMessage = '';
+  private scrollToBottom(): void {
+    try {
+      setTimeout(() => {
+        if (this.chatMessagesRef?.nativeElement) {
+          const element = this.chatMessagesRef.nativeElement;
+          element.scrollTop = element.scrollHeight;
+        }
+      });
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
     }
   }
 }

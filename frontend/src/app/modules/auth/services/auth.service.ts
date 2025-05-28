@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}/auth/login`, credentials)
+    return this.http.post<any>(`${environment.apiUrl}/api/auth/login`, credentials)
       .pipe(
         tap(response => {
           if (response.token) {
@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/auth/register`, userData);
+    return this.http.post(`${environment.apiUrl}/api/auth/register`, userData);
   }
 
   logout(): void {
@@ -90,7 +90,7 @@ export class AuthService {
   }
 
   refreshToken(): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}/auth/refresh-token`, {})
+    return this.http.post<any>(`${environment.apiUrl}/api/auth/refresh-token`, {})
       .pipe(
         tap(response => {
           if (response.token) {

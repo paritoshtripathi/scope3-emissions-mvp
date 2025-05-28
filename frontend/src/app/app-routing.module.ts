@@ -1,23 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MasterLayoutComponent } from './components/master-layout/master-layout.component';
-import { AuthGuard } from './modules/auth/guards/auth.guard';
+import { KBManagerComponent } from './components/kb-manager/kb-manager.component';
+import { MasterLayoutComponent } from '@components/master-layout/master-layout.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth/login',
-    pathMatch: 'full'
-  },
-  {
-    path: 'auth',
-    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
-  },
-  {
-    path: '',
     component: MasterLayoutComponent,
-    canActivate: [AuthGuard],
     children: [
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
       {
         path: 'home',
         loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
@@ -35,14 +30,22 @@ const routes: Routes = [
         loadChildren: () => import('./modules/analytics/analytics.module').then(m => m.AnalyticsModule)
       },
       {
+        path: 'data-upload',
+        loadChildren: () => import('./modules/data-upload/data-upload.module').then(m => m.DataUploadModule)
+      },
+      {
         path: 'settings',
         loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule)
       },
       {
-        path: 'data-upload',
-        loadChildren: () => import('./modules/data-upload/data-upload.module').then(m => m.DataUploadModule)
+        path: 'kb-manager',
+        component: KBManagerComponent
       }
     ]
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   }
 ];
 

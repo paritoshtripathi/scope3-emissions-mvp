@@ -1,56 +1,68 @@
 const express = require('express');
 const router = express.Router();
-const ragClient = require('../utils/ragClient');
+const axios = require('axios');
+const logger = require('../utils/logger');
 
-// Health check
-router.get('/health', async (req, res) => {
-    try {
-        const health = await ragClient.healthCheck();
-        res.json(health);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+// RAG API endpoint from environment variable
+const RAG_API_URL = process.env.RAG_API_URL || 'http://ai-ml:5000';
 
-// Process documents
-router.post('/documents', async (req, res) => {
-    try {
-        const { documents } = req.body;
-        const result = await ragClient.processDocuments(documents);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Query
+/**
+ * Process chat query through RAG pipeline
+ */
 router.post('/query', async (req, res) => {
     try {
-        const { query, topK } = req.body;
-        const result = await ragClient.query(query, topK);
-        res.json(result);
+        const { text, context, options } = req.body;
+
+        if (!text) {
+            return res.status(400).json({
+                error: 'Query text is required'
+            });
+        }
+
+        // Call RAG API
+        const response = await axios.post(`${RAG_API_URL}/rag/query`, {
+            text,
+            context,
+            options
+        });
+
+        // Transform response for frontend
+        const ragResponse = response.data;
+        const transformedResponse = {
+            answer: ragResponse.answer,
+            sources: ragResponse.sources || [],
+            confidence: ragResponse.confidence,
+            metadata: {
+                experts: ragResponse.metadata?.experts_used || [],
+                reasoning: ragResponse.metadata?.reasoning_paths || [],
+                categories: ragResponse.metadata?.scope3_categories || []
+            }
+        };
+
+        res.json(transformedResponse);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        logger.error('Error in RAG query:', error);
+        res.status(500).json({
+            error: 'Failed to process query',
+            details: error.message
+        });
     }
 });
 
-// Save state
-router.post('/save', async (req, res) => {
+/**
+ * Get RAG system health status
+ */
+router.get('/health', async (req, res) => {
     try {
-        const result = await ragClient.saveState();
-        res.json(result);
+        const response = await axios.get(`${RAG_API_URL}/rag/health`);
+        res.json(response.data);
     } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Load state
-router.post('/load', async (req, res) => {
-    try {
-        const result = await ragClient.loadState();
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        logger.error('Error checking RAG health:', error);
+        res.status(500).json({
+            error: 'Failed to check RAG system health',
+            details: error.message
+        });
     }
 });
 

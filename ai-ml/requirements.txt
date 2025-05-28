@@ -47,3 +47,5 @@ urllib3>=2.1.0
 pyopenssl>=23.3.0
 markupsafe>=2.1.1
 psutil
+
+aiohttp>=3.8.0

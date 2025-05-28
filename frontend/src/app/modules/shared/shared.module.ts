@@ -17,6 +17,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatBadgeModule } from '@angular/material/badge';
 
 import { VisualizationSectionComponent } from '@components/visualization-section/visualization-section.component';
 import { AvatarComponent } from '@components/avatar/avatar.component';
@@ -48,7 +53,12 @@ import { SidebarComponent } from '@components/sidebar/sidebar.component';
     MatToolbarModule,
     MatSidenavModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatChipsModule,
+    MatBadgeModule
   ],
   providers: [
     {
@@ -75,7 +85,12 @@ import { SidebarComponent } from '@components/sidebar/sidebar.component';
     MatToolbarModule,
     MatSidenavModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatChipsModule,
+    MatBadgeModule
   ]
 })
 export class SharedModule { }

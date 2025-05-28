@@ -43,6 +43,12 @@ class EnhancedRAGPipeline:
             self.tot_reasoner = ToTReasoner()
             self.agentic_rag = AgenticRAG()
             
+            # Track initialization status
+            self.initialization_status = {
+                'kb_manager': False,
+                'graph_manager': False
+            }
+            
             logging.info("Enhanced RAG Pipeline base initialization complete")
             
         except Exception as e:
@@ -50,15 +56,36 @@ class EnhancedRAGPipeline:
             raise
 
     async def initialize(self) -> None:
-        """Initialize async components"""
+        """Initialize async components with graceful degradation"""
         try:
-            # Initialize async components
-            await self.kb_manager.initialize()
-            await self.graph_manager.initialize()
-            logging.info("Enhanced RAG Pipeline async initialization complete")
+            # Initialize KB Manager
+            try:
+                await self.kb_manager.initialize()
+                self.initialization_status['kb_manager'] = True
+                logging.info("KB Manager initialized successfully")
+            except Exception as e:
+                logging.error(f"Error initializing KB Manager: {e}")
+                self.initialization_status['kb_manager'] = False
+
+            # Initialize Graph Manager
+            try:
+                await self.graph_manager.initialize()
+                self.initialization_status['graph_manager'] = True
+                logging.info("Graph Manager initialized successfully")
+            except Exception as e:
+                logging.error(f"Error initializing Graph Manager: {e}")
+                self.initialization_status['graph_manager'] = False
+
+            # Log overall status
+            if all(self.initialization_status.values()):
+                logging.info("Enhanced RAG Pipeline async initialization complete")
+            else:
+                failed_components = [k for k, v in self.initialization_status.items() if not v]
+                logging.warning(f"Partial initialization - Failed components: {failed_components}")
+
         except Exception as e:
             logging.error(f"Error in async initialization: {e}")
-            raise
+            # Continue with partial functionality instead of raising
 
     def process_document(self, content: str) -> Dict[str, Any]:
         """
@@ -236,6 +263,14 @@ class EnhancedRAGPipeline:
     ) -> Dict[str, Any]:
         """Get insights from graph database (async)"""
         try:
+            # Check Neo4j availability
+            if not self.initialization_status['graph_manager'] or not self.graph_manager.is_connected:
+                return {
+                    'status': 'neo4j_unavailable',
+                    'insights': {},
+                    'relationships': None
+                }
+
             # Extract categories (sync)
             categories = self._extract_scope3_categories(query, retrieved_docs)
             
@@ -263,7 +298,12 @@ class EnhancedRAGPipeline:
             
         except Exception as e:
             logging.error(f"Error getting graph insights: {e}")
-            return {}
+            return {
+                'status': 'error',
+                'error': str(e),
+                'insights': {},
+                'relationships': None
+            }
 
     async def _process_scope3_relationships(
         self,
@@ -272,25 +312,34 @@ class EnhancedRAGPipeline:
         doc_id: str
     ) -> None:
         """Process and store relationships (async)"""
-        category = metadata['scope3_category']
-        
-        if 'emission_value' in metadata:
-            await self.graph_manager.add_emission_source(
-                source_id=doc_id,
-                category=category,
-                properties={
-                    'emission_value': metadata['emission_value'],
-                    'source': metadata.get('source', 'unknown')
-                }
-            )
-        
-        if metadata.get('is_strategy', False):
-            await self.graph_manager.add_reduction_strategy(
-                strategy_id=doc_id,
-                name=metadata.get('strategy_name', ''),
-                categories=[category],
-                properties=metadata
-            )
+        # Skip if Neo4j is not available
+        if not self.initialization_status['graph_manager'] or not self.graph_manager.is_connected:
+            logging.info("Neo4j not available, skipping relationship processing")
+            return
+
+        try:
+            category = metadata['scope3_category']
+            
+            if 'emission_value' in metadata:
+                await self.graph_manager.add_emission_source(
+                    source_id=doc_id,
+                    category=category,
+                    properties={
+                        'emission_value': metadata['emission_value'],
+                        'source': metadata.get('source', 'unknown')
+                    }
+                )
+            
+            if metadata.get('is_strategy', False):
+                await self.graph_manager.add_reduction_strategy(
+                    strategy_id=doc_id,
+                    name=metadata.get('strategy_name', ''),
+                    categories=[category],
+                    properties=metadata
+                )
+        except Exception as e:
+            logging.error(f"Error processing relationships: {e}")
+            # Continue without relationships
 
     async def _synthesize_response(
         self,
@@ -342,8 +391,23 @@ class EnhancedRAGPipeline:
 
     async def get_kb_stats(self) -> Dict[str, Any]:
         """Get KB stats (combines sync and async)"""
-        return {
+        stats = {
             'kb_stats': self.kb_manager.get_stats(),  # sync
             'vector_stats': self.retriever.get_stats(),  # sync
-            'graph_stats': await self.graph_manager.get_relationship_graph()  # async
+            'graph_stats': None,
+            'status': {
+                'kb': True,
+                'vector': True,
+                'graph': False
+            }
         }
+
+        if self.initialization_status['graph_manager'] and self.graph_manager.is_connected:
+            try:
+                stats['graph_stats'] = await self.graph_manager.get_relationship_graph()
+                stats['status']['graph'] = True
+            except Exception as e:
+                logging.warning(f"Error getting graph stats: {e}")
+                stats['graph_error'] = str(e)
+
+        return stats

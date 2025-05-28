@@ -1,0 +1,320 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.kb-manager {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  section {
+    background: var(--mdc-elevated-card-container-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--mdc-elevated-card-container-elevation);
+
+    h2 {
+      margin-top: 0;
+      color: var(--mdc-text-button-label-text-color);
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      mat-icon {
+        color: var(--mdc-filled-button-container-color);
+      }
+    }
+  }
+
+  .upload-section {
+    .upload-files, .add-urls {
+      margin-bottom: 20px;
+
+      h3 {
+        color: var(--mdc-text-button-label-text-color);
+        font-size: 1.1em;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .file-input-container {
+      position: relative;
+      margin-bottom: 15px;
+
+      .file-input-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+    }
+
+    .file-item, .url-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--mdc-outlined-card-container-color);
+      border-radius: 4px;
+      margin-bottom: 8px;
+
+      .item-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        mat-icon {
+          color: var(--mdc-text-button-label-text-color);
+        }
+      }
+    }
+
+    .url-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+
+      mat-form-field {
+        flex: 1;
+      }
+
+      button {
+        align-self: flex-start;
+      }
+    }
+  }
+
+  .progress-section {
+    .progress-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+
+      .progress-item {
+        mat-card-header {
+          margin-bottom: 15px;
+
+          mat-icon {
+            &.completed { color: #4CAF50; }
+            &.error { color: #f44336; }
+            &.processing { color: #2196F3; }
+          }
+        }
+
+        .error-message {
+          color: #f44336;
+          margin-top: 8px;
+          font-size: 0.9em;
+        }
+      }
+    }
+  }
+
+  .quality-section {
+    .overall-score {
+      text-align: center;
+      margin-bottom: 30px;
+
+      h3 {
+        color: var(--mdc-text-button-label-text-color);
+        margin-bottom: 15px;
+      }
+
+      .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      }
+    }
+
+    .main-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+
+      .metric-card {
+        h3 {
+          margin: 0 0 15px 0;
+          color: var(--mdc-text-button-label-text-color);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .score-bar {
+          height: 24px;
+          background: var(--mdc-outlined-card-container-color);
+          border-radius: 12px;
+          overflow: hidden;
+          margin-bottom: 15px;
+
+          .score {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            transition: width 0.3s ease;
+          }
+        }
+
+        .metric-details {
+          .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+
+            label {
+              color: var(--mdc-text-button-label-text-color);
+              display: flex;
+              align-items: center;
+              gap: 4px;
+
+              mat-icon {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+              }
+            }
+
+            span {
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+
+    .distribution-section {
+      h3 {
+        color: var(--mdc-text-button-label-text-color);
+        margin-bottom: 20px;
+      }
+
+      .distribution-charts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+
+        .chart-card {
+          h4 {
+            margin: 0 0 15px 0;
+            color: var(--mdc-text-button-label-text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            mat-icon {
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+          .distribution-chart {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 10px 0;
+
+            .distribution-bar {
+              flex: 1;
+              background: var(--mdc-filled-button-container-color);
+              border-radius: 4px 4px 0 0;
+              min-width: 30px;
+              position: relative;
+              transition: height 0.3s ease;
+
+              .bar-label {
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.8em;
+                color: var(--mdc-text-button-label-text-color);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+              }
+
+              .bar-value {
+                position: absolute;
+                top: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.8em;
+                color: var(--mdc-text-button-label-text-color);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Success/Error snackbar styles
+::ng-deep {
+  .success-snackbar {
+    .mdc-snackbar__surface {
+      background-color: #4CAF50;
+    }
+    .mat-mdc-snack-bar-label, .mat-mdc-snack-bar-actions {
+      color: white;
+    }
+  }
+
+  .error-snackbar {
+    .mdc-snackbar__surface {
+      background-color: #f44336;
+    }
+    .mat-mdc-snack-bar-label, .mat-mdc-snack-bar-actions {
+      color: white;
+    }
+  }
+}

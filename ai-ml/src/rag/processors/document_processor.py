@@ -48,13 +48,29 @@ class DocumentProcessor:
         """
         if not document or not isinstance(document, str):
             return {
+                'content': [],
+                'chunks': [],
                 'document_chunks': [],
                 'paragraph_chunks': [],
                 'semantic_chunks': []
             }
             
+        # Get different chunk types
+        doc_chunks = self._split_document(document, self.chunk_sizes['document'])
+        para_chunks = self._split_document(document, self.chunk_sizes['paragraph'])
+        sem_chunks = self._extract_semantic_units(document)
+        
+        # Combine all unique chunks
+        all_chunks = list(set(doc_chunks + para_chunks + sem_chunks))
+        
+        # If no chunks were created, use the entire document as a single chunk
+        if not all_chunks:
+            all_chunks = [document]
+        
         return {
-            'document_chunks': self._split_document(document, self.chunk_sizes['document']),
-            'paragraph_chunks': self._split_document(document, self.chunk_sizes['paragraph']),
-            'semantic_chunks': self._extract_semantic_units(document)
+            'content': [document],  # Return as list for type consistency
+            'chunks': all_chunks,  # Combined chunks for backward compatibility
+            'document_chunks': doc_chunks,
+            'paragraph_chunks': para_chunks,
+            'semantic_chunks': sem_chunks
         }

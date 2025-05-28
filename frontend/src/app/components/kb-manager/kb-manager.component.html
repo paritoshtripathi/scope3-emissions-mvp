@@ -1,0 +1,299 @@
+<div class="kb-manager">
+  <!-- Upload Section -->
+  <section class="upload-section">
+    <h2>
+      <mat-icon>storage</mat-icon>
+      Knowledge Base Management
+    </h2>
+    
+    <!-- File Upload -->
+    <div class="upload-files">
+      <h3>
+        <mat-icon>upload_file</mat-icon>
+        Upload Documents
+      </h3>
+      <div class="file-input-container">
+        <button mat-raised-button color="primary" class="file-input-button">
+          <mat-icon>attach_file</mat-icon>
+          Choose Files
+        </button>
+        <input type="file" multiple (change)="onFileSelected($event)" accept=".pdf,.txt,.doc,.docx">
+      </div>
+      <div class="selected-files" *ngIf="selectedFiles.length > 0">
+        <div *ngFor="let file of selectedFiles" class="file-item">
+          <div class="item-info">
+            <mat-icon>description</mat-icon>
+            <span>{{ file.name }}</span>
+          </div>
+          <button mat-icon-button color="warn" (click)="clearFiles()" matTooltip="Remove file">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- URL Input -->
+    <div class="add-urls">
+      <h3>
+        <mat-icon>link</mat-icon>
+        Add URLs
+      </h3>
+      <div class="url-input">
+        <mat-form-field appearance="outline">
+          <mat-label>Enter URL</mat-label>
+          <input matInput #urlInput type="url" placeholder="https://example.com/document">
+          <mat-icon matSuffix>link</mat-icon>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="onUrlAdded(urlInput.value); urlInput.value = ''">
+          <mat-icon>add</mat-icon>
+          Add
+        </button>
+      </div>
+      <div class="url-list" *ngIf="urls.length > 0">
+        <div *ngFor="let url of urls" class="url-item">
+          <div class="item-info">
+            <mat-icon>link</mat-icon>
+            <span>{{ url }}</span>
+          </div>
+          <button mat-icon-button color="warn" (click)="removeUrl(url)" matTooltip="Remove URL">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button mat-raised-button color="primary" class="process-btn" 
+            (click)="processDocuments()" 
+            [disabled]="selectedFiles.length === 0 && urls.length === 0">
+      <mat-icon>cloud_upload</mat-icon>
+      Process Documents
+    </button>
+  </section>
+
+  <!-- Progress Section -->
+  <section class="progress-section" *ngIf="Object.keys(processingStatus).length > 0">
+    <h2>
+      <mat-icon>sync</mat-icon>
+      Processing Progress
+    </h2>
+    <div class="progress-items">
+      <mat-card *ngFor="let item of processingStatus | keyvalue" class="progress-item">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>
+            {{ item.value.status === 'completed' ? 'check_circle' : 
+               item.value.status === 'error' ? 'error' : 'hourglass_empty' }}
+          </mat-icon>
+          <mat-card-title>{{ item.key }}</mat-card-title>
+          <mat-card-subtitle>{{ item.value.status | titlecase }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-progress-bar
+            [mode]="item.value.status === 'processing' ? 'determinate' : 'determinate'"
+            [value]="item.value.progress"
+            [color]="item.value.status === 'completed' ? 'primary' : 
+                    item.value.status === 'error' ? 'warn' : 'accent'">
+          </mat-progress-bar>
+          <div class="error-message" *ngIf="item.value.status === 'error'">
+            {{ item.value.error }}
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Quality Assessment Section -->
+  <section class="quality-section" *ngIf="qualityMetrics">
+    <h2>
+      <mat-icon>analytics</mat-icon>
+      Knowledge Base Quality Assessment
+    </h2>
+    
+    <!-- Overall Score -->
+    <div class="overall-score">
+      <h3>Overall Quality Score</h3>
+      <div class="score-circle" [style.background]="getScoreColor(qualityMetrics.overall_score)">
+        {{ (qualityMetrics.overall_score * 100).toFixed(1) }}%
+      </div>
+    </div>
+
+    <!-- Main Metrics -->
+    <div class="main-metrics">
+      <mat-card class="metric-card">
+        <h3>
+          <mat-icon>library_books</mat-icon>
+          Coverage
+        </h3>
+        <div class="score-bar">
+          <div class="score" 
+               [style.width.%]="qualityMetrics.coverage_score * 100"
+               [style.background]="getScoreColor(qualityMetrics.coverage_score)">
+            {{ (qualityMetrics.coverage_score * 100).toFixed(1) }}%
+          </div>
+        </div>
+        <div class="metric-details">
+          <div class="detail-item">
+            <label>
+              <mat-icon>description</mat-icon>
+              Document Coverage
+            </label>
+            <span>{{ (qualityMetrics.coverage_metrics.document_coverage * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>format_list_bulleted</mat-icon>
+              Chunk Density
+            </label>
+            <span>{{ (qualityMetrics.coverage_metrics.chunk_density * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>category</mat-icon>
+              Category Coverage
+            </label>
+            <span>{{ (qualityMetrics.coverage_metrics.category_coverage * 100).toFixed(1) }}%</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <h3>
+          <mat-icon>sync_alt</mat-icon>
+          Consistency
+        </h3>
+        <div class="score-bar">
+          <div class="score" 
+               [style.width.%]="qualityMetrics.consistency_score * 100"
+               [style.background]="getScoreColor(qualityMetrics.consistency_score)">
+            {{ (qualityMetrics.consistency_score * 100).toFixed(1) }}%
+          </div>
+        </div>
+        <div class="metric-details">
+          <div class="detail-item">
+            <label>
+              <mat-icon>info</mat-icon>
+              Metadata Consistency
+            </label>
+            <span>{{ (qualityMetrics.consistency_metrics.metadata_consistency * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>compare</mat-icon>
+              Content Similarity
+            </label>
+            <span>{{ (qualityMetrics.consistency_metrics.content_similarity * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>history</mat-icon>
+              Version Consistency
+            </label>
+            <span>{{ (qualityMetrics.consistency_metrics.version_consistency * 100).toFixed(1) }}%</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <h3>
+          <mat-icon>grade</mat-icon>
+          Relevance
+        </h3>
+        <div class="score-bar">
+          <div class="score" 
+               [style.width.%]="qualityMetrics.relevance_score * 100"
+               [style.background]="getScoreColor(qualityMetrics.relevance_score)">
+            {{ (qualityMetrics.relevance_score * 100).toFixed(1) }}%
+          </div>
+        </div>
+        <div class="metric-details">
+          <div class="detail-item">
+            <label>
+              <mat-icon>verified</mat-icon>
+              Source Credibility
+            </label>
+            <span>{{ (qualityMetrics.relevance_metrics.source_credibility * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>description</mat-icon>
+              Content Type Relevance
+            </label>
+            <span>{{ (qualityMetrics.relevance_metrics.content_type_relevance * 100).toFixed(1) }}%</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <h3>
+          <mat-icon>diversity_3</mat-icon>
+          Diversity
+        </h3>
+        <div class="score-bar">
+          <div class="score" 
+               [style.width.%]="qualityMetrics.diversity_score * 100"
+               [style.background]="getScoreColor(qualityMetrics.diversity_score)">
+            {{ (qualityMetrics.diversity_score * 100).toFixed(1) }}%
+          </div>
+        </div>
+        <div class="metric-details">
+          <div class="detail-item">
+            <label>
+              <mat-icon>category</mat-icon>
+              Category Diversity
+            </label>
+            <span>{{ (qualityMetrics.diversity_metrics.category_diversity * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>straighten</mat-icon>
+              Length Diversity
+            </label>
+            <span>{{ (qualityMetrics.diversity_metrics.length_diversity * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="detail-item">
+            <label>
+              <mat-icon>source</mat-icon>
+              Source Diversity
+            </label>
+            <span>{{ (qualityMetrics.diversity_metrics.source_diversity * 100).toFixed(1) }}%</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Distribution Charts -->
+    <div class="distribution-section">
+      <h3>Content Distribution</h3>
+      <div class="distribution-charts">
+        <mat-card class="chart-card">
+          <h4>
+            <mat-icon>category</mat-icon>
+            Categories
+          </h4>
+          <div class="distribution-chart">
+            <div *ngFor="let item of getDistributionItems(qualityMetrics.coverage_metrics.category_distribution)" 
+                 class="distribution-bar"
+                 [style.height.%]="item.percentage">
+              <span class="bar-label">{{ item.label }}</span>
+              <span class="bar-value">{{ item.value }}</span>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="chart-card">
+          <h4>
+            <mat-icon>source</mat-icon>
+            Source Types
+          </h4>
+          <div class="distribution-chart">
+            <div *ngFor="let item of getDistributionItems(qualityMetrics.relevance_metrics.source_distribution)"
+                 class="distribution-bar"
+                 [style.height.%]="item.percentage">
+              <span class="bar-label">{{ item.label }}</span>
+              <span class="bar-value">{{ item.value }}</span>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+</div>

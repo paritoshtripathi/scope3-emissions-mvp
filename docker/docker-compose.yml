@@ -1,68 +1,5 @@
-# version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile.frontend
-    ports:
-      - "4200:80"  # Host port 4200 mapped to container port 80
-    volumes:
-      - ../frontend:/app
-    environment:
-      - NODE_ENV=production
-
-  backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile.backend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ../backend:/app
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: scope3
-      POSTGRES_HOST: postgres
-    depends_on:
-      - postgres
-
-  ai-ml:
-    build:
-      context: ../ai-ml
-      dockerfile: Dockerfile.ai-ml
-    container_name: ai-ml
-    ports:
-      - "5000:5000"
-    volumes:
-      - ../ai-ml:/app/
-      - ../ai-ml/models:/app/output    
-    environment:
-      USE_INFERENCE_API: "true"              # Set to "false" to use a local model
-      LOCAL_MODEL_NAME: "distilbert-base-uncased"  # Specify local model name
-      INFERENCE_API_URL: "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
-      HF_API_TOKEN: "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"
-    depends_on:
-      - weaviate
-
-  weaviate:
-    image: semitechnologies/weaviate:latest
-    container_name: scope3_weaviate
-    ports:
-      - 8080:8080
-      - 50051:50051
-    environment:
-      - QUERY_DEFAULTS_LIMIT=20
-      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
-      - DEFAULT_VECTORIZER_MODULE=text2vec-huggingface
-      - ENABLE_MODULES=text2vec-huggingface
-      - HUGGINGFACE_APIKEY="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"  # Replace with your actual API key
-      - CLUSTER_HOSTNAME=node1
-    volumes:
-      - ../database/weaviate/data:/var/lib/weaviate
-    restart: unless-stopped
-   
   postgres:
     image: postgres:latest
     container_name: scope3_postgres
@@ -72,55 +9,154 @@ services:
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_DB: scope3
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ../database/postgres/data:/var/lib/postgresql/data
-    #postgres_data: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - scope3_network
 
   neo4j:
-    image: neo4j:latest
+    image: neo4j:5.15.0
+    container_name: scope3_neo4j
+    restart: always
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - "7474:7474"   # HTTP UI
+      - "7687:7687"   # Bolt protocol
     volumes:
       - ../database/neo4j/data:/data
+      - ../database/neo4j/logs:/logs
+      - ../database/neo4j/import:/import
+      - ../database/neo4j/plugins:/plugins
     environment:
-      - NEO4J_AUTH=neo4j/securepassword
+      NEO4J_AUTH: "neo4j/scope3password"
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
 
-  rasa:
+      # Heap sizing
+      NEO4J_dbms_memory_heap_initial__size: "1G"
+      NEO4J_dbms_memory_heap_max__size:     "2G"
+
+      # Directories
+      NEO4J_dbms_directories_import:  "/import"
+      NEO4J_dbms_directories_plugins: "/plugins"
+
+      # Enable APOC & GDS procedures
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_whitelist:    "apoc.*,gds.*"
+
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p scope3password \"RETURN 1;\""]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+    networks:
+      - scope3_network
+
+  rag-api:
     build:
-      context: ../rasa
-      dockerfile: Dockerfile.rasa
-    volumes:
-      - ../rasa:/app
-      - ../rasa/models:/app/models
-      - ../rasa/logs:/app/logs
-      - ../rasa/actions:/app/actions
-      - ../rasa/config:/app/config
-      - ../rasa/data:/app/data
+      context: ../ai-ml
+      dockerfile: Dockerfile.ai-ml
+    container_name: scope3_rag_api
+    restart: always
     ports:
-      - "5005:5005"
+      - "5000:5000"
+    volumes:
+      - ../ai-ml/models:/app/models
+      - ../ai-ml/kb:/app/kb
+      - ../ai-ml/logs:/app/logs
+      - ../ai-ml/uploads:/app/uploads
     environment:
-      - PYTHONWARNINGS=ignore
-      - SQLALCHEMY_WARN_20=0
-      - SQLALCHEMY_SILENCE_UBER_WARNING=1
-    
-  actions:
-    image: rasa/rasa-sdk:3.6.0
+      PYTHONPATH: /app
+      FLASK_APP:    src.rag.api.app
+      FLASK_ENV:    development
+
+      HUGGINGFACE_API_TOKEN: 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
+      DEFAULT_LLM_MODEL:     zephyr
+      LLM_TEMPERATURE:       0.2
+      LLM_MAX_TOKENS:        250
+
+      DOCUMENT_MODEL: sentence-transformers/all-mpnet-base-v2
+      CHUNK_MODEL:    sentence-transformers/all-MiniLM-L6-v2
+      SEMANTIC_MODEL: sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+
+      NEO4J_URI:      bolt://scope3_neo4j:7687
+      NEO4J_USER:     neo4j
+      NEO4J_PASSWORD: scope3password
+
+      FAISS_INDEX_TYPE:   IVFFlat
+      VECTOR_DIMENSION:   768
+      KB_STORAGE_DIR:     /app/kb
+
+      PORT:   5000
+      DEBUG:  "true"
+      LOG_LEVEL: INFO
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/rag/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - scope3_network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.backend
+    container_name: scope3_backend
+    restart: always
+    ports:
+      - "3000:3000"
     volumes:
-      - ../rasa/actions:/app/actions
-    ports:
-      - "5055:5055"
+      - ../backend:/app
+      - ../backend/uploads:/app/uploads
+    environment:
+      NODE_ENV:        development
+      POSTGRES_USER:   postgres
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB:     scope3
+      POSTGRES_HOST:   postgres
+      POSTGRES_PORT:   5432
+      RAG_API_URL:     http://rag-api:5000/api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rag-api:
+        condition: service_healthy
+    networks:
+      - scope3_network
 
-  data-insight-agent:
+  frontend:
     build:
-      context: ../ai-ml/agents/data_insight_agent
+      context: ../frontend
+      dockerfile: Dockerfile.frontend
+    container_name: scope3_frontend
+    restart: always
     ports:
-      - "5001:5000"
+      - "4200:4200"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV:   development
+      BACKEND_URL: http://localhost:3000
+    depends_on:
+      - backend
+    networks:
+      - scope3_network
 
-  narrative-agent:
-    build:
-      context: ../ai-ml/agents/narrative_agent
-    ports:
-      - "5002:5000"
+networks:
+  scope3_network:
+    name: scope3_network
+    driver: bridge

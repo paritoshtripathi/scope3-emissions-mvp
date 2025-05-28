@@ -2,6 +2,7 @@
 Multi-Vector Retriever with Hybrid Search Capabilities
 """
 from typing import List, Dict, Any, Optional, Tuple
+import uuid
 try:
     import numpy as np
 except ImportError:
@@ -10,7 +11,7 @@ except ImportError:
         "Install it with 'pip install numpy'"
     )
 from src.rag.indexing.faiss_indexes import FAISSIndexManager
-from src.rag.indexing.hybrid_search import HybridSearchEngine  # Changed from HybridSearcher
+from src.rag.indexing.hybrid_search import HybridSearchEngine
 
 class MultiVectorRetriever:
     def __init__(self):
@@ -23,7 +24,7 @@ class MultiVectorRetriever:
         }
         
         # Initialize hybrid searcher
-        self.hybrid_searcher = HybridSearchEngine()  # Changed from HybridSearcher
+        self.hybrid_searcher = HybridSearchEngine()
         
         # Retrieval weights for different levels
         self.weights = {
@@ -43,19 +44,7 @@ class MultiVectorRetriever:
         strategy: str = 'weighted',
         context: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
-        """
-        Retrieve documents using multi-level embeddings
-        
-        Args:
-            query_embeddings: Dictionary of embeddings at different levels
-            query: The original query string
-            top_k: Number of documents to retrieve
-            strategy: Retrieval strategy ('weighted' or 'ensemble')
-            context: Optional additional context
-            
-        Returns:
-            List of retrieved documents with scores
-        """
+        """Retrieve documents using multi-level embeddings"""
         # Use hybrid search for enhanced retrieval
         hybrid_results = await self.hybrid_searcher.search(
             query=query,
@@ -87,8 +76,8 @@ class MultiVectorRetriever:
             
         # Add document metadata
         for result in results:
-            doc_id = result['metadata']['doc_id']
-            if doc_id in self.doc_metadata:
+            doc_id = result['metadata'].get('doc_id')
+            if doc_id and doc_id in self.doc_metadata:
                 result['metadata'].update(self.doc_metadata[doc_id])
                 
         return results
@@ -99,26 +88,20 @@ class MultiVectorRetriever:
         embeddings: Dict[str, np.ndarray],
         metadata: Optional[Dict[str, Any]] = None
     ) -> List[str]:
-        """
-        Add documents to all indexes (synchronous operation)
-        
-        Args:
-            chunks: List of text chunks
-            embeddings: Dictionary of embeddings at different levels
-            metadata: Optional document metadata
-            
-        Returns:
-            List of document IDs
-        """
+        """Add documents to all indexes"""
         doc_ids = []
         metadata = metadata or {}
+        
+        # Use existing doc_id from metadata or generate a new one
+        doc_id = metadata.get('doc_id') or f"doc_{uuid.uuid4().hex[:8]}"
+        metadata['doc_id'] = doc_id
         
         # Add to each level's index
         for level, level_embeddings in embeddings.items():
             chunk_metadata = [
                 {
-                    'chunk_id': i,
-                    'doc_id': f"doc_{len(self.doc_metadata)}",
+                    'chunk_id': f"{doc_id}_chunk_{i}",
+                    'doc_id': doc_id,
                     **metadata
                 }
                 for i in range(len(chunks))
@@ -131,7 +114,6 @@ class MultiVectorRetriever:
             doc_ids.extend(ids)
             
         # Store document metadata
-        doc_id = f"doc_{len(self.doc_metadata)}"
         self.doc_metadata[doc_id] = metadata
         
         return doc_ids
@@ -151,7 +133,10 @@ class MultiVectorRetriever:
                 results['indices'],
                 results['metadata']
             )):
-                doc_id = meta['doc_id']
+                doc_id = meta.get('doc_id')
+                if not doc_id:
+                    continue
+                    
                 score = 1 - (distance / np.max(results['distances']))
                 weighted_score = score * weight
                 
@@ -193,7 +178,10 @@ class MultiVectorRetriever:
                 results['indices'],
                 results['metadata']
             )):
-                doc_id = meta['doc_id']
+                doc_id = meta.get('doc_id')
+                if not doc_id:
+                    continue
+                    
                 score = 1 - (distance / np.max(results['distances']))
                 
                 if doc_id in doc_votes:
@@ -230,18 +218,7 @@ class MultiVectorRetriever:
         k: int,
         context: Optional[Dict[str, Any]] = None
     ) -> Tuple[np.ndarray, np.ndarray, List[Dict[str, Any]]]:
-        """
-        Perform context-aware search at a specific level
-        
-        Args:
-            embedding: Query embedding
-            level: Index level
-            k: Number of results
-            context: Optional search context
-            
-        Returns:
-            Tuple of (distances, indices, metadata)
-        """
+        """Perform context-aware search at a specific level"""
         # Get base results
         distances, indices, metadata = self.indexes[level].search(
             embedding,
@@ -323,17 +300,7 @@ class MultiVectorRetriever:
         k: int = 5,
         nprobe: Optional[int] = None
     ) -> List[Dict[str, Any]]:
-        """
-        Search for similar vectors using FAISS
-        
-        Args:
-            query_vector: Query vector to search for
-            k: Number of results to return
-            nprobe: Number of clusters to search (optional)
-            
-        Returns:
-            List of search results with distances and metadata
-        """
+        """Search for similar vectors using FAISS"""
         # Convert query vector to numpy array
         query_array = np.array(query_vector, dtype=np.float32).reshape(1, -1)
         
@@ -351,14 +318,18 @@ class MultiVectorRetriever:
             indices[0],
             metadata
         )):
+            doc_id = meta.get('doc_id')
+            if not doc_id:
+                continue
+                
             result = {
                 'id': int(idx),
                 'distance': float(dist),
                 'metadata': meta
             }
             # Add document metadata if available
-            if 'doc_id' in meta and meta['doc_id'] in self.doc_metadata:
-                result['metadata'].update(self.doc_metadata[meta['doc_id']])
+            if doc_id in self.doc_metadata:
+                result['metadata'].update(self.doc_metadata[doc_id])
             results.append(result)
             
         return results

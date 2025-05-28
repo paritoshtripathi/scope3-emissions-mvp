@@ -1,24 +1,51 @@
-<div class="chat-overlay" *ngIf="showChat">
-  <div class="chat-icon" *ngIf="isCollapsed" (click)="toggleChat()">
-    <img [src]="avatarImage" alt="Chat Avatar" class="chat-avatar"/>
+<div class="chat-container" [class.tour-mode]="isTourMode" [class.visible]="visible" [class.collapsed]="isCollapsed">
+  <div class="chat-header" (click)="toggleChat()">
+    <img [src]="avatarImage" alt="Avatar" class="avatar-image">
+    <span>AI Assistant</span>
+    <button class="toggle-btn">
+      <i [class]="isCollapsed ? 'fas fa-expand' : 'fas fa-compress'"></i>
+    </button>
   </div>
 
-  <div *ngIf="!isCollapsed" class="chat-window">
-    <div class="chat-header">
-      <div class="header-content">
-        <img [src]="avatarImage" alt="Chat Avatar" class="header-avatar"/>
-        <span>Chat Assistant</span>
+  <div class="chat-body">
+    <div class="chat-messages" #chatMessages>
+      <div *ngFor="let message of messages" 
+           [ngClass]="{
+             'message': true,
+             'user-message': message.user === MessageType.USER,
+             'bot-message': message.user === MessageType.BOT,
+             'avatar-message': message.user === MessageType.AVATAR,
+             'tour-message': message.isTourMessage
+           }">
+        <div class="message-content">
+          <ng-container *ngIf="!message.isLoading; else loadingTemplate">
+            {{ message.text }}
+          </ng-container>
+          <ng-template #loadingTemplate>
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </ng-template>
+        </div>
+        <div class="message-timestamp" *ngIf="message.timestamp">
+          {{ message.timestamp | date:'shortTime' }}
+        </div>
       </div>
-      <button (click)="toggleChat()">✕</button>
     </div>
-    <div class="messages">
-      <div *ngFor="let message of messages" class="message" [ngClass]="message.user">
-        <strong>{{ message.user }}:</strong> {{ message.text }}
-      </div>
-    </div>
-    <div class="input-area">
-      <input [(ngModel)]="userMessage" placeholder="Type your message..." (keyup.enter)="sendMessage()"/>
-      <button (click)="sendMessage()" [disabled]="!userMessage.trim()">Send</button>
+    
+    <div class="chat-input">
+      <input 
+        #messageInput
+        type="text" 
+        placeholder="Ask about your emissions data..."
+        [(ngModel)]="currentMessage"
+        (keyup.enter)="sendMessage()"
+      >
+      <button (click)="sendMessage()" [disabled]="!currentMessage.trim()" title="Send message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </div>
   </div>
 </div>
